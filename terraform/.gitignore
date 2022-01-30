@@ -1,0 +1,11 @@
+# Compiled files
+*.tfstate
+*.tfstate.*
+
+
+# Module directory
+.terraform/
+.terragrunt-cache/
+
+# Keys
+*.pem
