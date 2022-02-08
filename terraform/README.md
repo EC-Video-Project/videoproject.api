@@ -1,4 +1,4 @@
-# Important details around Terraform
+# Deploying with Terraform
 
 Prerequisites:
 
@@ -14,3 +14,5 @@ Cognito needs client_id and client_secret for Google and Facebook federated logi
 - /cognito/google/clientSecret (secret string)
 - /cognito/facebook/clientId
 - /cognito/facebook/clientSecret (secret string)
+
+Note that the Google/Facebook integrations will **show updates every time you run terraform apply\***. I'm not sure why this is, but it doesn't seem to be breaking anything.
