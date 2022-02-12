@@ -1,0 +1,31 @@
+service: videoproject
+frameworkVersion: "3"
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  region: us-west-2
+  httpApi:
+    authorizers:
+      someJwtAuthorizer:
+        type: jwt
+        identitySource: $request.header.Authorization
+        issuerUrl: https://cognito-idp.us-west-2.amazonaws.com/us-west-2_4BQDdJ7hN
+        audience:
+          - c5vdjbs23cn99ba0g6eeepovg
+
+functions:
+  hello:
+    handler: api/handler.handler
+    events:
+      - httpApi:
+          path: /hello
+          method: get
+          authorizer: someJwtAuthorizer
+
+  usersTest:
+    handler: api/users.handler
+    events:
+      - httpApi:
+          path: /users/{userId}
+          method: get
