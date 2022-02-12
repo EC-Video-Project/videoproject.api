@@ -31,13 +31,14 @@ resource "aws_cognito_user_pool_client" "client_devlocal" {
   id_token_validity                    = 24
   callback_urls                        = ["http://localhost:3000/authenticated"]
   logout_urls                          = ["http://localhost:3000/signedout"]
-  allowed_oauth_flows                  = ["implicit"]
+  allowed_oauth_flows                  = ["implicit", "code"]
   allowed_oauth_scopes                 = ["phone", "email", "openid", "profile"]
   enable_token_revocation              = true
   refresh_token_validity               = 3650
   supported_identity_providers         = ["COGNITO", aws_cognito_identity_provider.provider_google.provider_name, aws_cognito_identity_provider.provider_facebook.provider_name]
   prevent_user_existence_errors        = "ENABLED"
   allowed_oauth_flows_user_pool_client = true
+  generate_secret                      = true
 }
 
 data "aws_ssm_parameter" "google_client_id" {

@@ -47,3 +47,13 @@ resource "aws_apigatewayv2_authorizer" "cognito_auth" {
     issuer   = var.jwt_issuer
   }
 }
+
+resource "random_string" "random" {
+  length = 16
+}
+
+data "archive_file" "lambda_zip" {
+  type        = "zip"
+  source_dir  = "${path.root}/../src/"
+  output_path = "${path.root}/../bin/${random_string.random.id}.zip"
+}

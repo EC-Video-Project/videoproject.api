@@ -28,7 +28,15 @@ variable "authorizer_id" {
   default     = ""
 }
 
-variable "source_path" {
-  description = "Path to directory holding source for this lambda/endpoint"
+variable "lambda_zip" {
+  description = "Zip file containing source code for lambda"
+  type = object({
+    output_path         = string
+    output_base64sha256 = string
+  })
+}
+
+variable "handler" {
+  description = "path to js module including handler function"
   type        = string
 }
