@@ -1,6 +1,11 @@
 resource "aws_apigatewayv2_api" "videoproj" {
   name          = "videoproj"
   protocol_type = "HTTP"
+  cors_configuration {
+    allow_origins = ["http://localhost:3000"]
+    allow_methods = ["*"]
+    allow_headers = ["*"]
+  }
 }
 
 resource "aws_apigatewayv2_stage" "videoproj" {
@@ -54,6 +59,7 @@ resource "random_string" "random" {
 
 data "archive_file" "lambda_zip" {
   type        = "zip"
-  source_dir  = "${path.root}/../src/"
+  source_dir  = "${path.root}/../"
   output_path = "${path.root}/../bin/${random_string.random.id}.zip"
+  excludes    = ["bin", "terraform"]
 }

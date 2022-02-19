@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/EC-Video-Project/videoproject.api/issues"
   },
-  "homepage": "https://github.com/EC-Video-Project/videoproject.api#readme"
+  "homepage": "https://github.com/EC-Video-Project/videoproject.api#readme",
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.52.0"
+  }
 }

@@ -25,7 +25,7 @@ resource "aws_lambda_permission" "api_gw_service_main" {
 resource "aws_lambda_function" "api_endpoint" {
   function_name = var.lambda_name
   runtime       = "nodejs14.x"
-  handler       = var.handler
+  handler       = "src/${var.handler}"
   role          = var.lambda_exec_role_arn
 
   filename         = var.lambda_zip.output_path
