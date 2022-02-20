@@ -6,17 +6,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/EC-Video-Project/videoproject.api.git"
-  },
   "author": "",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/EC-Video-Project/videoproject.api/issues"
-  },
-  "homepage": "https://github.com/EC-Video-Project/videoproject.api#readme",
   "dependencies": {
-    "@aws-sdk/client-dynamodb": "^3.52.0"
+    "@aws-sdk/client-dynamodb": "^3.52.0",
+    "http-errors": "^2.0.0"
   }
 }
