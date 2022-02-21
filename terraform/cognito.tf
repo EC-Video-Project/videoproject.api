@@ -111,3 +111,15 @@ resource "aws_cognito_user_pool_domain" "main" {
   domain       = var.cognito_domain
   user_pool_id = aws_cognito_user_pool.userpool.id
 }
+
+resource "aws_ssm_parameter" "auth_issuer_url" {
+  name  = "/cognito/issuerUrl"
+  type  = "String"
+  value = "https://${aws_cognito_user_pool.userpool.endpoint}"
+}
+
+resource "aws_ssm_parameter" "auth_audience_devlocal" {
+  name  = "/cognito/audience/devlocal"
+  type  = "String"
+  value = aws_cognito_user_pool_client.client_devlocal.id
+}

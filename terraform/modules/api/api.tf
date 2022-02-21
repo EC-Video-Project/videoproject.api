@@ -61,5 +61,37 @@ data "archive_file" "lambda_zip" {
   type        = "zip"
   source_dir  = "${path.root}/../"
   output_path = "${path.root}/../bin/${random_string.random.id}.zip"
-  excludes    = ["bin", "terraform"]
+  excludes    = ["bin", "terraform", "serverless-framework"]
+}
+
+
+
+# ------ stuff for serverless framework -------
+
+resource "aws_iam_role" "serverless_lambda" {
+  name = "serverless_api_lambda"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [{
+      Action = "sts:AssumeRole"
+      Effect = "Allow"
+      Sid    = ""
+      Principal = {
+        Service = "lambda.amazonaws.com"
+      }
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "serverless_lambda_basic_exec" {
+  role       = aws_iam_role.serverless_lambda.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+}
+
+resource "aws_ssm_parameter" "serverless_lambda_" {
+  name  = "/api/lambdaExecutionRole"
+  type  = "String"
+  value = aws_iam_role.serverless_lambda.arn
 }

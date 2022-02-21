@@ -1,18 +1,30 @@
 service: videoproject
 frameworkVersion: "3"
+configValidationMode: error
+
+plugins:
+  - serverless-offline
 
 provider:
   name: aws
   runtime: nodejs14.x
+  memorySize: 128
   region: us-west-2
+  iam:
+    role: ${ssm:/api/lambdaExecutionRole}
   httpApi:
+    cors: true
     authorizers:
-      someJwtAuthorizer:
+      cognitoJwtAuth:
         type: jwt
         identitySource: $request.header.Authorization
-        issuerUrl: https://cognito-idp.us-west-2.amazonaws.com/us-west-2_4BQDdJ7hN
+        issuerUrl: ${ssm:/cognito/issuerUrl} # pulling value out of parameter store
+        # would be nice to split a StringList param store var, but cant get it working
+        # audience: { "Fn::Split": [",", "${ssm:/cognito/audience}"] }
         audience:
-          - c5vdjbs23cn99ba0g6eeepovg
+          - ${ssm:/cognito/audience/devlocal}
+  environment:
+    APP_TEST_VAR: birdsarentreal
 
 functions:
   hello:
@@ -21,7 +33,8 @@ functions:
       - httpApi:
           path: /hello
           method: get
-          authorizer: someJwtAuthorizer
+          authorizer:
+            name: cognitoJwtAuth
 
   usersTest:
     handler: api/users.handler
@@ -29,3 +42,5 @@ functions:
       - httpApi:
           path: /users/{userId}
           method: get
+          authorizer:
+            name: cognitoJwtAuth
