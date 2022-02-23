@@ -18,13 +18,6 @@ provider "aws" {
   region = var.aws_region
 }
 
-module "api" {
-  source = "./modules/api"
-
-  jwt_issuer    = "https://${aws_cognito_user_pool.userpool.endpoint}"
-  jwt_audiences = [aws_cognito_user_pool_client.client_devlocal.id]
-}
-
 module "db" {
   source = "./modules/db"
 }

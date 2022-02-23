@@ -112,12 +112,14 @@ resource "aws_cognito_user_pool_domain" "main" {
   user_pool_id = aws_cognito_user_pool.userpool.id
 }
 
+# Used by JWT authorizer in serverless framework
 resource "aws_ssm_parameter" "auth_issuer_url" {
   name  = "/cognito/issuerUrl"
   type  = "String"
   value = "https://${aws_cognito_user_pool.userpool.endpoint}"
 }
 
+# Used by JWT authorizer in serverless framework
 resource "aws_ssm_parameter" "auth_audience_devlocal" {
   name  = "/cognito/audience/devlocal"
   type  = "String"

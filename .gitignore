@@ -1,2 +1,23 @@
-/bin
-/node_modules
+# package directories
+node_modules
+jspm_packages
+
+# Serverless directories
+.serverless
+
+# build
+bin
+
+# terraform 
+
+# Compiled files
+*.tfstate
+*.tfstate.*
+
+
+# Module directory
+.terraform/
+.terragrunt-cache/
+
+# Keys
+*.pem

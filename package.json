@@ -1,15 +1,16 @@
 {
-  "name": "videoproject.api",
+  "name": "videoproject",
   "version": "1.0.0",
-  "description": "Backend resources and services live here",
-  "main": "index.js",
+  "description": "Backend services for videoproject",
+  "main": "handler.js",
   "scripts": {
+    "dev": "serverless offline --ignoreJWTSignature",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
-  "dependencies": {
-    "@aws-sdk/client-dynamodb": "^3.52.0",
-    "http-errors": "^2.0.0"
+  "dependencies": {},
+  "devDependencies": {
+    "serverless-offline": "^8.5.0"
   }
 }

@@ -5,6 +5,12 @@ configValidationMode: error
 plugins:
   - serverless-offline
 
+package:
+  patterns:
+    - "!terraform/**"
+    # - src/**
+    # - node_modules/**
+
 provider:
   name: aws
   runtime: nodejs14.x
@@ -28,7 +34,7 @@ provider:
 
 functions:
   hello:
-    handler: api/handler.handler
+    handler: src/api/handler.handler
     events:
       - httpApi:
           path: /hello
@@ -37,7 +43,7 @@ functions:
             name: cognitoJwtAuth
 
   usersTest:
-    handler: api/users.handler
+    handler: src/api/users.handler
     events:
       - httpApi:
           path: /users/{userId}
