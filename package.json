@@ -5,12 +5,14 @@
   "main": "handler.js",
   "scripts": {
     "dev": "serverless offline --ignoreJWTSignature",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha || true"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {},
   "devDependencies": {
-    "serverless-offline": "^8.5.0"
+    "serverless-offline": "^8.5.0",
+    "chai": "^4.3.6",
+    "mocha": "^9.2.1"
   }
 }
