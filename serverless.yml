@@ -41,10 +41,24 @@ functions:
             name: cognitoJwtAuth
 
   usersTest:
-    handler: src/api/users.handler
+    handler: src/api/testHandler.handler
     events:
       - httpApi:
           path: /users/{userId}
           method: get
           authorizer:
             name: cognitoJwtAuth
+
+  createUser:
+    handler: src/api/users/create.handler
+    events:
+      - httpApi:
+          path: /users
+          method: post
+          authorizer:
+            name: cognitoJwtAuth
+            
+  # getUserProfile
+  # getUserSettings
+  # updateUser
+  # delteUser
