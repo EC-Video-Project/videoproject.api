@@ -3,6 +3,7 @@ frameworkVersion: "3"
 configValidationMode: error
 
 plugins:
+  - serverless-plugin-typescript
   - serverless-offline
 
 package:
@@ -32,7 +33,7 @@ provider:
 
 functions:
   hello:
-    handler: src/api/handler.handler
+    handler: src/api/testHandler.handler
     events:
       - httpApi:
           path: /hello
@@ -40,11 +41,11 @@ functions:
           authorizer:
             name: cognitoJwtAuth
 
-  usersTest:
-    handler: src/api/testHandler.handler
+  getUser:
+    handler: src/api/users/get.handler
     events:
       - httpApi:
-          path: /users/{userId}
+          path: /user/{userId}
           method: get
           authorizer:
             name: cognitoJwtAuth
@@ -53,12 +54,25 @@ functions:
     handler: src/api/users/create.handler
     events:
       - httpApi:
-          path: /users
+          path: /user
           method: post
           authorizer:
             name: cognitoJwtAuth
-            
-  # getUserProfile
-  # getUserSettings
-  # updateUser
-  # delteUser
+
+  updateUser:
+    handler: src/api/users/update.handler
+    events:
+      - httpApi:
+          path: /user
+          method: patch
+          authorizer:
+            name: cognitoJwtAuth
+
+  deleteUser:
+    handler: src/api/users/delete.handler
+    events:
+      - httpApi:
+          path: /user
+          method: delete
+          authorizer:
+            name: cognitoJwtAuth

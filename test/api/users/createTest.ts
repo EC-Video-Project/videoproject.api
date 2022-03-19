@@ -1,9 +1,12 @@
-'use strict'
-
-const assert = require('chai').assert;
+import * as assert from 'chai';
 const {  } = require('../../../src/api/users/create');
 
-describe('POST /users endpoint', function(){
+describe('POST /user endpoint', function(){
+  // if given an id in the request body
+    // uses that id
+  // if not given an id
+    // gets the id from the jwt
+
   // if a user with the id already exists
     // return error message with status 409
   // if no user with the id already exists
