@@ -1,5 +1,5 @@
-const assert = require('chai').assert;
-const {  } = require('../../../src/api/users/get');
+// import * as assert from 'chai';
+// const {  } = require('../../../src/api/users/get');
 
 describe('GET /user endpoint', function(){
   // if given an id in the query string

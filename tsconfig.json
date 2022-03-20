@@ -1,18 +1,8 @@
 {
   "compilerOptions": {
-    "preserveConstEnums": true,
-    "strictNullChecks": true,
+    "baseUrl": ".",
+    "target": "es6",
     "sourceMap": true,
-    "allowJs": true,
-    "target": "es5",
-    "outDir": ".build",
-    "moduleResolution": "node",
-    "lib": ["es2015"],
-    "rootDir": "./"
-  },
-  "exclude": [
-    "./test/",
-    "./node_modules/",
-    "./dist/"
-  ],
+    "moduleResolution": "node"
+  }
 }

@@ -3,7 +3,7 @@ frameworkVersion: "3"
 configValidationMode: error
 
 plugins:
-  - serverless-plugin-typescript
+  - serverless-bundle
   - serverless-offline
 
 package:

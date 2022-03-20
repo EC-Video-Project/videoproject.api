@@ -1,10 +1,11 @@
 import * as AWS from 'aws-sdk';
-const JwtHelper = require('./helpers/jwts');
+import * as JwtHelper from './helpers/jwts';
 import { APIGatewayProxyEvent } from 'aws-lambda';
+import midWrapper from '../../middleware/midWrapper';
 
 AWS.config.update({ region: 'us-west-2'});
 
-module.exports.handler = async (event: APIGatewayProxyEvent) => {
+const rawHandler = async (event: APIGatewayProxyEvent) => {
   const userInfo = JwtHelper.userInfo(event.headers.Authorization);
   const userParams = JSON.parse(event.body || '{}');
 
@@ -62,3 +63,5 @@ module.exports.handler = async (event: APIGatewayProxyEvent) => {
     body: JSON.stringify(resBody)
   }
 }
+
+export const handler = midWrapper(rawHandler);

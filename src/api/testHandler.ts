@@ -1,10 +1,11 @@
 import * as AWS from 'aws-sdk';
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-const midWrapper = require('../middleware/midWrapper');
+import midWrapper from '../middleware/midWrapper';
 
 AWS.config.update({ region: 'us-west-2'});
 
 const rawHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+  console.log(event);
   const params = {
     TableName: 'users',
   }
@@ -25,4 +26,4 @@ console.log("it worked")
   };
 };
 
-module.exports.handler = midWrapper(rawHandler);
+export const handler = midWrapper(rawHandler);

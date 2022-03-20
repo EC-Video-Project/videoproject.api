@@ -1,9 +1,9 @@
-const middy = require('@middy/core');
-const inputOutputLogger = require('@middy/input-output-logger');
-const httpJsonBodyParser = require('@middy/http-json-body-parser');
+import middy from '@middy/core';
+import inputOutputLogger from '@middy/input-output-logger';
+import httpJsonBodyParser from '@middy/http-json-body-parser';
 
-module.exports = function(handler) {
+export default function(handler) {
   return middy(handler)
     .use(inputOutputLogger())
     .use(httpJsonBodyParser())
-};
+}

@@ -1,5 +1,5 @@
-import * as assert from 'chai';
-const {  } = require('../../../src/api/users/create');
+// import * as assert from 'chai';
+// const {  } = require('../../../src/api/users/create');
 
 describe('POST /user endpoint', function(){
   // if given an id in the request body
