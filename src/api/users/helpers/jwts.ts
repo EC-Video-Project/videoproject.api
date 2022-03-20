@@ -9,7 +9,7 @@ type userInfoPayload = JwtPayload & {
 };
 
 type userInfoObject = {
-  sub: string,
+  userId: string,
   email: string,
   name: string,
   firstName: string,
@@ -17,10 +17,10 @@ type userInfoObject = {
   profilePic: string,
 }
 
-export const userInfo = (token = ''): userInfoObject => {
+export const userInfo = (token: string): userInfoObject => {
   const decoded = jwt_decode<userInfoPayload>(token);
   const userInfo = { 
-    sub: decoded.sub,
+    userId: decoded.sub,
     email: decoded.email,
     name: decoded.name,
     firstName: decoded.given_name, 
@@ -29,6 +29,32 @@ export const userInfo = (token = ''): userInfoObject => {
   };
   return userInfo;
 };
+
+// this probably should be handled on the client instead...
+export const autofillParams = (token: string, userParams: userInfoObject): userInfoObject => {
+  const decoded = jwt_decode<userInfoPayload>(token);
+  if (userParams.userId !== decoded.sub) return userParams;
+
+  const autofillAttributes = {
+    userId: 'sub',
+    email: 'email',
+    username: 'name',
+    firstName: 'given_name',
+    lastName: 'family_name',
+    profilePic: 'picture'
+  }
+
+  const autofilledParams = Object.assign({}, userParams);
+  
+  Object.keys(autofillAttributes).forEach(attribute => {
+    if (!autofilledParams[attribute]) {
+      const tokenAttributeName = autofillAttributes[attribute];
+      autofilledParams[attribute] = decoded[tokenAttributeName];
+    }
+  })
+
+  return autofilledParams;
+}
 
 
 

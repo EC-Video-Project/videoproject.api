@@ -3,6 +3,7 @@ import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import midWrapper from '../../middleware/midWrapper';
 
 AWS.config.update({ region: "us-west-2"});
+const dynamo = new AWS.DynamoDB.DocumentClient();
 
 const rawHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   const id = event.pathParameters.userId;
@@ -17,7 +18,6 @@ const rawHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyR
 
   let resBody;
 
-  const dynamo = new AWS.DynamoDB.DocumentClient();
   try {
     resBody = await dynamo.query(queryParams).promise();
   } catch (err) {
