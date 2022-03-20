@@ -1,15 +1,15 @@
 import * as AWS from 'aws-sdk';
 import * as JwtHelper from './helpers/jwts';
-import { APIGatewayProxyEvent } from 'aws-lambda';
+import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import midWrapper from '../../middleware/midWrapper';
 
 AWS.config.update({ region: 'us-west-2'});
 
-const rawHandler = async (event: APIGatewayProxyEvent) => {
+const rawHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   const userInfo = JwtHelper.userInfo(event.headers.Authorization);
   const userParams = JSON.parse(event.body || '{}');
 
-  const id = userParams.userId || userInfo.userId;
+  const id = userParams.userId || userInfo.sub;
   const { 
     bio, 
     employerMode,
@@ -44,19 +44,20 @@ const rawHandler = async (event: APIGatewayProxyEvent) => {
   let resBody;
   
   const dynamo = new AWS.DynamoDB.DocumentClient();
-  // dynamo.put(params, function(err, data) {
-  //   if (err) console.log(err);
-  //   else {
-  //     console.log(data);
-  //     resBody = data;
-  //   }
-  // });
-  try {
-    resBody = await dynamo.put(params).promise();
-  } catch (err) {
-    resBody = err;
-    console.log(err);
-  }
+  await dynamo.put(params, function(err, data) {
+    if (err) console.log(err);
+    else {
+      console.log(data);
+      resBody = data;
+    }
+  });
+  // try {
+  //   resBody = await dynamo.put(params).promise();
+  //   console.log(resBody);
+  // } catch (err) {
+  //   resBody = err;
+  //   console.log(err);
+  // }
 
   return {
     statusCode: 200,

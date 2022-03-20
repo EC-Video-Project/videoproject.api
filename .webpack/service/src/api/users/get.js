@@ -33,8 +33,14 @@ __webpack_require__.r(__webpack_exports__);
 
 const userInfo = (token = '') => {
     const decoded = (0,jwt_decode__WEBPACK_IMPORTED_MODULE_0__["default"])(token);
-    const { sub, email, name, given_name, family_name, picture } = decoded;
-    const userInfo = { sub, email, name, firstName: given_name, lastName: family_name, profilePic: picture };
+    const userInfo = {
+        sub: decoded.sub,
+        email: decoded.email,
+        name: decoded.name,
+        firstName: decoded.given_name,
+        lastName: decoded.family_name,
+        profilePic: decoded.picture
+    };
     return userInfo;
 };
 // example token (Google login)

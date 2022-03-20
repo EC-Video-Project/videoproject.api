@@ -1,9 +1,32 @@
-import jwt_decode from 'jwt-decode';
+import jwt_decode, { JwtPayload } from 'jwt-decode';
 
-export const userInfo = (token = '') => {
-  const decoded = jwt_decode(token);
-  const { sub, email, name, given_name, family_name, picture } = decoded;
-  const userInfo = { sub, email, name, firstName: given_name, lastName: family_name, profilePic: picture };
+type userInfoPayload = JwtPayload & { 
+  email:string,
+  name: string,
+  given_name: string,
+  family_name: string
+  picture: string
+};
+
+type userInfoObject = {
+  sub: string,
+  email: string,
+  name: string,
+  firstName: string,
+  lastName: string,
+  profilePic: string,
+}
+
+export const userInfo = (token = ''): userInfoObject => {
+  const decoded = jwt_decode<userInfoPayload>(token);
+  const userInfo = { 
+    sub: decoded.sub,
+    email: decoded.email,
+    name: decoded.name,
+    firstName: decoded.given_name, 
+    lastName: decoded.family_name, 
+    profilePic: decoded.picture 
+  };
   return userInfo;
 };
 

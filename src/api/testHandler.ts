@@ -19,7 +19,7 @@ const rawHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyR
     resBody = err;
     console.log(err);
   }
-console.log("it worked")
+
   return {
     statusCode: 200,
     body: JSON.stringify(resBody)

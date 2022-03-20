@@ -1,13 +1,11 @@
 import * as AWS from 'aws-sdk';
-import { APIGatewayProxyEvent } from 'aws-lambda';
-import * as JwtHelper from './helpers/jwts';
+import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 import midWrapper from '../../middleware/midWrapper';
 
 AWS.config.update({ region: "us-west-2"});
 
-const rawHandler = async (event: APIGatewayProxyEvent) => {
-  const userInfo = JwtHelper.userInfo(event.headers.Authorization);
-  const id = event.pathParameters ? event.pathParameters.userId : userInfo.sub;
+const rawHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+  const id = event.pathParameters.userId;
   
   const queryParams = {
     TableName : 'users',

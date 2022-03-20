@@ -33,8 +33,14 @@ __webpack_require__.r(__webpack_exports__);
 
 const userInfo = (token = '') => {
     const decoded = (0,jwt_decode__WEBPACK_IMPORTED_MODULE_0__["default"])(token);
-    const { sub, email, name, given_name, family_name, picture } = decoded;
-    const userInfo = { sub, email, name, firstName: given_name, lastName: family_name, profilePic: picture };
+    const userInfo = {
+        sub: decoded.sub,
+        email: decoded.email,
+        name: decoded.name,
+        firstName: decoded.given_name,
+        lastName: decoded.family_name,
+        profilePic: decoded.picture
+    };
     return userInfo;
 };
 // example token (Google login)
@@ -812,7 +818,7 @@ aws_sdk__WEBPACK_IMPORTED_MODULE_0__.config.update({ region: 'us-west-2' });
 const rawHandler = (event) => __awaiter(void 0, void 0, void 0, function* () {
     const userInfo = _helpers_jwts__WEBPACK_IMPORTED_MODULE_1__.userInfo(event.headers.Authorization);
     const userParams = JSON.parse(event.body || '{}');
-    const id = userParams.userId || userInfo.userId;
+    const id = userParams.userId || userInfo.sub;
     const { bio, employerMode, email, firstName, lastName, profilePic, socials, starredPostings, username } = userParams;
     // validate userParams
     const params = {
@@ -833,20 +839,21 @@ const rawHandler = (event) => __awaiter(void 0, void 0, void 0, function* () {
     };
     let resBody;
     const dynamo = new aws_sdk__WEBPACK_IMPORTED_MODULE_0__.DynamoDB.DocumentClient();
-    // dynamo.put(params, function(err, data) {
-    //   if (err) console.log(err);
-    //   else {
-    //     console.log(data);
-    //     resBody = data;
-    //   }
-    // });
-    try {
-        resBody = yield dynamo.put(params).promise();
-    }
-    catch (err) {
-        resBody = err;
-        console.log(err);
-    }
+    yield dynamo.put(params, function (err, data) {
+        if (err)
+            console.log(err);
+        else {
+            console.log(data);
+            resBody = data;
+        }
+    });
+    // try {
+    //   resBody = await dynamo.put(params).promise();
+    //   console.log(resBody);
+    // } catch (err) {
+    //   resBody = err;
+    //   console.log(err);
+    // }
     return {
         statusCode: 200,
         body: JSON.stringify(resBody)
