@@ -112,16 +112,34 @@ resource "aws_cognito_user_pool_domain" "main" {
   user_pool_id = aws_cognito_user_pool.userpool.id
 }
 
-# Used by JWT authorizer in serverless framework
 resource "aws_ssm_parameter" "auth_issuer_url" {
   name  = "/cognito/issuerUrl"
   type  = "String"
   value = "https://${aws_cognito_user_pool.userpool.endpoint}"
 }
 
-# Used by JWT authorizer in serverless framework
-resource "aws_ssm_parameter" "auth_audience_devlocal" {
-  name  = "/cognito/audience/devlocal"
+resource "aws_ssm_parameter" "auth_devlocal_clientId" {
+  name  = "/cognito/devlocal/clientId"
   type  = "String"
   value = aws_cognito_user_pool_client.client_devlocal.id
+}
+
+resource "aws_ssm_parameter" "auth_devlocal_clientSecret" {
+  name  = "/cognito/devlocal/clientSecret"
+  type  = "SecureString"
+  value = aws_cognito_user_pool_client.client_devlocal.client_secret
+}
+
+resource "aws_ssm_parameter" "auth_devlocal_redirect_url" {
+  name  = "/cognito/devlocal/redirectUrl"
+  type  = "String"
+  value = one(aws_cognito_user_pool_client.client_devlocal.callback_urls)
+}
+
+data "aws_region" "current" {}
+
+resource "aws_ssm_parameter" "auth_devlocal_domain" {
+  name  = "/cognito/devlocal/domain"
+  type  = "String"
+  value = "https://${var.cognito_domain}.auth.${data.aws_region.current.name}.amazoncognito.com/oauth2/token"
 }

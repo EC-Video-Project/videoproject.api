@@ -27,7 +27,7 @@ provider:
         # would be nice to split a StringList param store var, but cant get it working
         # audience: { "Fn::Split": [",", "${ssm:/cognito/audience}"] }
         audience:
-          - ${ssm:/cognito/audience/devlocal}
+          - ${ssm:/cognito/devlocal/clientId}
   environment:
     APP_TEST_VAR: birdsarentreal
 
@@ -76,3 +76,17 @@ functions:
           method: delete
           authorizer:
             name: cognitoJwtAuth
+
+  auth_token:
+    handler: src/api/auth/token.handler
+    events:
+      - httpApi:
+          path: /auth/token
+          method: post
+
+  auth_refresh:
+    handler: src/api/auth/refresh.handler
+    events:
+      - httpApi:
+          path: /auth/refresh
+          method: post
