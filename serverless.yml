@@ -28,8 +28,7 @@ provider:
         # audience: { "Fn::Split": [",", "${ssm:/cognito/audience}"] }
         audience:
           - ${ssm:/cognito/devlocal/clientId}
-  environment:
-    APP_TEST_VAR: birdsarentreal
+          - ${ssm:/cognito/mobiledevlocal/clientId}
 
 functions:
   hello:
@@ -90,3 +89,12 @@ functions:
       - httpApi:
           path: /auth/refresh
           method: post
+
+  user_post_video:
+    handler: src/api/user/post-userId-videos.handler
+    events:
+      - httpApi:
+          path: /user/{userId}/videos
+          method: post
+          authorizer:
+            name: cognitoJwtAuth
