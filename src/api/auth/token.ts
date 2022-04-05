@@ -36,7 +36,7 @@ const baseHandler = async (
 
   // Return cognito's tokens to the user, or an error
   return axios
-    .post(await getSsmParameter("/cognito/devlocal/domain"), data, {
+    .post(`${await getSsmParameter("/cognito/domain")}/oauth2/token`, data, {
       headers: {
         Authorization: `Basic ${encodedAuthorizationStr}`,
       },

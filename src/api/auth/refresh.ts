@@ -32,7 +32,7 @@ const baseHandler = async (
   ).toString("base64");
 
   return axios
-    .post(await getSsmParameter("/cognito/devlocal/domain"), data, {
+    .post(`${await getSsmParameter("/cognito/domain")}/oauth2/token`, data, {
       headers: {
         Authorization: `Basic ${encodedAuthorizationStr}`,
       },
