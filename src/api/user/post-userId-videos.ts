@@ -11,39 +11,56 @@ import { HttpJsonEvent } from "src/types/HttpJsonEvent";
 import { getSsmParameter } from "src/utilities/getSsmParameter";
 import { v4 as uuidv4 } from "uuid";
 
-const baseHandler = async (
-  event: HttpJsonEvent
-): Promise<APIGatewayProxyResult> => {
-  const newVideoId = uuidv4();
+const ALLOWED_MIME_TYPES = ["video/mp4"];
 
+type FileUpload = {
+  content: any;
+  mimetype: string;
+};
+
+const validateVideo = (video: FileUpload) => {
+  if (!video || !video.content)
+    throw "Video data is either missing or malformed";
+  if (!ALLOWED_MIME_TYPES.includes(video.mimetype))
+    throw `Video must be of type ${ALLOWED_MIME_TYPES.toString()}`;
+};
+
+const uploadVideo = async (
+  video: FileUpload,
+  newVideoId: string
+): Promise<void> => {
   try {
     const client = new S3Client({});
     const command = new PutObjectCommand({
       Bucket: await getSsmParameter("/video/storageBucketName"),
       Key: newVideoId,
-      Body: event.body.video.content,
-      ContentType: "video/mp4",
+      Body: video.content,
+      ContentType: video.mimetype,
     });
 
-    const response = await client.send(command);
-
-    return {
-      statusCode: 200,
-      body: JSON.stringify({
-        status: "Success",
-        videoId: newVideoId,
-        response,
-      }),
-    };
+    await client.send(command);
   } catch (error) {
     console.error(error);
-    return {
-      statusCode: 500,
-      body: JSON.stringify({
-        error: "There was an error uploading your video",
-      }),
-    };
+    throw "An error occurred while saving video to object store";
   }
+};
+
+const baseHandler = async ({
+  body: { video },
+}: HttpJsonEvent): Promise<APIGatewayProxyResult> => {
+  validateVideo(video); // should be using http-errors
+
+  const newVideoId = uuidv4();
+
+  await uploadVideo(video, newVideoId);
+
+  return {
+    statusCode: 200,
+    body: JSON.stringify({
+      status: "Success",
+      videoId: newVideoId,
+    }),
+  };
 };
 
 const inputSchema = {
@@ -53,8 +70,9 @@ const inputSchema = {
       type: "object",
       properties: {
         tags: { type: "string" },
+        video: { type: "object" },
       },
-      required: ["tags"],
+      required: ["tags", "video"],
     },
   },
 };
