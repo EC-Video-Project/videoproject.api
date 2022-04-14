@@ -98,3 +98,12 @@ functions:
           method: post
           authorizer:
             name: cognitoJwtAuth
+
+  video_get:
+    handler: src/api/video/get-video-by-id.handler
+    events:
+      - httpApi:
+          path: /video/{videoId}
+          method: get
+          authorizer:
+            name: cognitoJwtAuth
