@@ -10,6 +10,8 @@ import { APIGatewayProxyResult } from "aws-lambda";
 import { HttpJsonEvent } from "src/types/HttpJsonEvent";
 import { getSsmParameter } from "src/utilities/getSsmParameter";
 import { v4 as uuidv4 } from "uuid";
+import * as createError from "http-errors";
+import { videoUploadJsonBodyParser } from "src/middleware/videoUploadJsonBodyParser";
 
 const ALLOWED_MIME_TYPES = ["video/mp4"];
 
@@ -45,14 +47,18 @@ const uploadVideo = async (
   }
 };
 
-const baseHandler = async ({
-  body: { video },
-}: HttpJsonEvent): Promise<APIGatewayProxyResult> => {
-  validateVideo(video); // should be using http-errors
+const addUserVideoToDb = async (videoId: string) => {};
 
-  const newVideoId = uuidv4();
+const baseHandler = async ({
+  body,
+}: HttpJsonEvent): Promise<APIGatewayProxyResult> => {
+  validateVideo(body.video); // should be using http-errors
+
+  const newVideoId = uuidv4(); // change this out to be timestamp-unique-id
 
   await uploadVideo(video, newVideoId);
+
+  await addUserVideoToDb(newVideoId);
 
   return {
     statusCode: 200,
@@ -63,13 +69,25 @@ const baseHandler = async ({
   };
 };
 
+// can we generate this from typescript definitions?
+// there is a trello card for this
 const inputSchema = {
   type: "object",
   properties: {
     body: {
       type: "object",
       properties: {
-        tags: { type: "string" },
+        tags: {
+          type: "array",
+          items: {
+            type: "object",
+            properties: {
+              type: { type: "string" },
+              value: { type: "string" },
+            },
+            required: ["type", "value"],
+          },
+        },
         video: { type: "object" },
       },
       required: ["tags", "video"],
@@ -80,5 +98,6 @@ const inputSchema = {
 export const handler = middy(baseHandler)
   .use(httpHeaderNormalizer())
   .use(httpMultipartBodyParser())
+  .use(videoUploadJsonBodyParser())
   .use(validator({ inputSchema }))
   .use(httpErrorHandler());
