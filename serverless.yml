@@ -91,10 +91,10 @@ functions:
           method: post
 
   user_post_video:
-    handler: src/api/user/post-userId-videos.handler
+    handler: src/api/user/post-videos.handler
     events:
       - httpApi:
-          path: /user/{userId}/videos
+          path: /user/videos
           method: post
           authorizer:
             name: cognitoJwtAuth
