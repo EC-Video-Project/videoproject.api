@@ -1,7 +1,7 @@
 import { Tag } from "./Tag";
 
 export type UserVideo = {
-  Id: string;
-  Tags: Tag[];
+  id: string;
+  tags: Tag[];
   userId: string;
 };

@@ -3,3 +3,8 @@ export type UserVideoDb = {
   SK: string;
   userId: string;
 };
+
+export type UserVideoDbTag = {
+  PK: string;
+  SK: string;
+};
