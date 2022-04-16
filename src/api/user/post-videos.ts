@@ -7,7 +7,6 @@ import httpMultipartBodyParser from "@middy/http-multipart-body-parser";
 import validator from "@middy/validator";
 import { APIGatewayProxyResult } from "aws-lambda";
 import { HttpJsonEvent } from "src/types/HttpJsonEvent";
-import { v4 as uuidv4 } from "uuid";
 import * as createError from "http-errors";
 import { videoUploadJsonBodyParser } from "src/middleware/videoUploadJsonBodyParser";
 import { UserVideo } from "src/models/UserVideo";
@@ -16,6 +15,7 @@ import { saveFileToObjectStore } from "src/persistence/saveFileToObjectStore";
 import { validateFileUpload } from "../../model-validators/fileUpload";
 import { validateTags } from "src/model-validators/tags";
 import { userInfo } from "../users/helpers/jwts";
+import { getTimestampId } from "src/utilities/getTimestampId";
 
 const baseHandler = async ({
   body,
@@ -28,12 +28,12 @@ const baseHandler = async ({
     throw new createError.BadRequest(error);
   }
 
-  const { userId } = userInfo(headers.authorization); // todo: i think this function should be moved
+  const { userId } = userInfo(headers.authorization); // todo: (eh) i think this function should be moved
 
   const newVideo: UserVideo = {
-    id: uuidv4(), // change this out to be timestamp-unique-id
+    id: getTimestampId(),
     tags: body.tags,
-    userId: userId, // this needs validaton
+    userId,
   };
 
   await saveFileToObjectStore(body.video, newVideo.id);

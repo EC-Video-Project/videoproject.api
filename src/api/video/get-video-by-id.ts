@@ -2,8 +2,6 @@ import middy from "@middy/core";
 import httpErrorHandler from "@middy/http-error-handler";
 import { APIGatewayProxyResult } from "aws-lambda";
 import { HttpJsonEvent } from "src/types/HttpJsonEvent";
-import { validate as uuidValidate } from "uuid";
-import * as createError from "http-errors";
 import { getPresignedS3Url } from "src/utilities/getPresignedS3Url";
 
 const baseHandler = async (
@@ -11,8 +9,7 @@ const baseHandler = async (
 ): Promise<APIGatewayProxyResult> => {
   const videoId = event.pathParameters.videoId;
 
-  if (!uuidValidate(videoId))
-    throw new createError.BadRequest(`${videoId} is not a valid identifier`);
+  // todo: do some kind of regex validation here
 
   const fileUrl = await getPresignedS3Url(videoId);
 
