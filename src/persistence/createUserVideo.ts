@@ -1,50 +1,32 @@
 import { BatchWriteCommand } from "@aws-sdk/lib-dynamodb";
 import { getDynamoClient } from "src/awsClients/dynamo";
+import { Tag } from "src/models/Tag";
 import { UserVideo } from "src/models/UserVideo";
-import { UserVideoDb, UserVideoDbTag } from "src/models/UserVideoDb";
+import { UserVideoDb } from "src/models/UserVideoDb";
 
-const userVideoModelToDb = (
-  userVideo: UserVideo
-): { video: UserVideoDb; tags: UserVideoDbTag[] } => {
-  const video = {
-    PK: `uservideo#${userVideo.id}`,
+const tagToDbTag = (tag: Tag): string => `tag#${tag.type}#${tag.value}`;
+
+const userVideoToDbItems = (userVideo: UserVideo): UserVideoDb[] => {
+  const allDbTags = userVideo.tags.map((tag) => tagToDbTag(tag));
+  allDbTags.push("tag#all");
+
+  return allDbTags.map((tag) => ({
+    PK: tag,
     SK: `uservideo#${userVideo.id}`,
     userId: userVideo.userId,
-  };
-
-  const tags = userVideo.tags.map((tag) => {
-    return {
-      PK: `uservideo#${userVideo.id}`,
-      SK: `tag#${tag.type}#${tag.value}`,
-    };
-  });
-
-  return { video, tags };
-};
-
-const userVideoDbToModel = (
-  userVideoDb: UserVideoDb,
-  tags: UserVideoDbTag[] = []
-): UserVideo => {
-  return {
-    id: userVideoDb.PK,
-    tags: [], // todo fix
-    userId: userVideoDb.userId,
-  };
+    tags: allDbTags,
+  }));
 };
 
 export const createUserVideo = async (userVideo: UserVideo): Promise<void> => {
   const client = getDynamoClient();
 
-  const { video, tags } = userVideoModelToDb(userVideo);
-
-  const itemsToWriteToDb = [{ PutRequest: { Item: video as any } }];
-  tags.forEach((x) =>
-    itemsToWriteToDb.push({ PutRequest: { Item: x as any } })
-  );
+  const itemsToWriteToDb = userVideoToDbItems(userVideo);
 
   const command = new BatchWriteCommand({
-    RequestItems: { VideosTags: itemsToWriteToDb },
+    RequestItems: {
+      VideosTags: itemsToWriteToDb.map((Item) => ({ PutRequest: { Item } })),
+    },
   });
 
   const result = await client.send(command);

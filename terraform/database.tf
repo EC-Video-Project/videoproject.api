@@ -27,13 +27,6 @@ resource "aws_dynamodb_table" "videos_and_tags" {
   }
 
   global_secondary_index {
-    name            = "pkSwap"
-    hash_key        = local.videos_tags_sk
-    range_key       = local.videos_tags_pk
-    projection_type = "ALL"
-  }
-
-  global_secondary_index {
     name            = "userId"
     hash_key        = local.videos_tags_userId
     range_key       = local.videos_tags_sk
