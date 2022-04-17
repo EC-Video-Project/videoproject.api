@@ -1,9 +1,10 @@
+import { MiddlewareObj } from "@middy/core";
 import * as createError from "http-errors";
 
 // Parses all request body fields into JSON, except for
 // "video" field, as that one contains binary data
 
-export const videoUploadJsonBodyParser = () => {
+export const videoUploadJsonBodyParser = (): MiddlewareObj => {
   const before = async (request) => {
     try {
       Object.keys(request.event.body)
