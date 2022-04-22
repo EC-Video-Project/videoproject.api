@@ -2,16 +2,19 @@
 
 Backend resources and services live here
 
+## Getting Started
+
+Make sure you have Node v16+, Yarn Classic (v1), and Serverless installed
+Make sure you have run through the Serverless "Getting Started" steps: https://www.serverless.com/framework/docs/getting-started
+
+Install dependencies: `yarn`
+
+Run this API locally by running: `yarn run dev`
+Behind the scenes, this is using the serverless-offline framework to emulate API gateway and Lambda.
+
 ## Terraform
 
 Infrastructure is defined using Terraform.
-
-## REST API
-
-It's built with Serverless Framework. Make sure you have run through the "Getting Started" steps: https://www.serverless.com/framework/docs/getting-started
-
-Run this API locally by running: `npm run dev`
-Behind the scenes, this is using the serverless-offline framework to emulate API gateway and Lambda.
 
 ## Usage
 

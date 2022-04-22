@@ -21,6 +21,11 @@ resource "aws_iam_role_policy_attachment" "serverless_lambda_basic_exec" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
 
+resource "aws_iam_role_policy_attachment" "severless_lambda_dynamodb_full" {
+  role       = aws_iam_role.serverless_lambda.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess"
+}
+
 # Serverless framework will read this parameter, and use the value
 # for all lambdas that make up the API
 resource "aws_ssm_parameter" "serverless_lambda" {

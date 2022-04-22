@@ -41,6 +41,23 @@ resource "aws_cognito_user_pool_client" "client_devlocal" {
   generate_secret                      = true
 }
 
+resource "aws_cognito_user_pool_client" "client_mobiledevlocal" {
+  name                                 = "MobileDevLocal"
+  user_pool_id                         = aws_cognito_user_pool.userpool.id
+  access_token_validity                = 24
+  id_token_validity                    = 24
+  callback_urls                        = ["videoproject.ethanholman.com://oauth"]
+  logout_urls                          = ["videoproject.ethanholman.com://signout"]
+  allowed_oauth_flows                  = ["code"]
+  allowed_oauth_scopes                 = ["phone", "email", "openid", "profile"]
+  enable_token_revocation              = true
+  refresh_token_validity               = 3650
+  supported_identity_providers         = ["COGNITO", aws_cognito_identity_provider.provider_google.provider_name, aws_cognito_identity_provider.provider_facebook.provider_name]
+  prevent_user_existence_errors        = "ENABLED"
+  allowed_oauth_flows_user_pool_client = true
+  generate_secret                      = false
+}
+
 data "aws_ssm_parameter" "google_client_id" {
   name = "/cognito/google/clientId"
 }
@@ -112,16 +129,46 @@ resource "aws_cognito_user_pool_domain" "main" {
   user_pool_id = aws_cognito_user_pool.userpool.id
 }
 
-# Used by JWT authorizer in serverless framework
 resource "aws_ssm_parameter" "auth_issuer_url" {
   name  = "/cognito/issuerUrl"
   type  = "String"
   value = "https://${aws_cognito_user_pool.userpool.endpoint}"
 }
 
-# Used by JWT authorizer in serverless framework
-resource "aws_ssm_parameter" "auth_audience_devlocal" {
-  name  = "/cognito/audience/devlocal"
+resource "aws_ssm_parameter" "auth_devlocal_clientId" {
+  name  = "/cognito/devlocal/clientId"
   type  = "String"
   value = aws_cognito_user_pool_client.client_devlocal.id
+}
+
+resource "aws_ssm_parameter" "auth_devlocal_clientSecret" {
+  name  = "/cognito/devlocal/clientSecret"
+  type  = "SecureString"
+  value = aws_cognito_user_pool_client.client_devlocal.client_secret
+}
+
+resource "aws_ssm_parameter" "auth_devlocal_redirect_url" {
+  name  = "/cognito/devlocal/redirectUrl"
+  type  = "String"
+  value = one(aws_cognito_user_pool_client.client_devlocal.callback_urls)
+}
+
+resource "aws_ssm_parameter" "auth_mobiledevlocal_clientId" {
+  name  = "/cognito/mobiledevlocal/clientId"
+  type  = "String"
+  value = aws_cognito_user_pool_client.client_mobiledevlocal.id
+}
+
+resource "aws_ssm_parameter" "auth_mobiledevlocal_redirect_url" {
+  name  = "/cognito/mobiledevlocal/redirectUrl"
+  type  = "String"
+  value = one(aws_cognito_user_pool_client.client_mobiledevlocal.callback_urls)
+}
+
+data "aws_region" "current" {}
+
+resource "aws_ssm_parameter" "auth_domain" {
+  name  = "/cognito/domain"
+  type  = "String"
+  value = "https://${var.cognito_domain}.auth.${data.aws_region.current.name}.amazoncognito.com"
 }
