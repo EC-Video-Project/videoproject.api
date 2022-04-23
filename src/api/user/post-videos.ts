@@ -14,7 +14,7 @@ import { createUserVideo } from "src/persistence/createUserVideo";
 import { saveFileToObjectStore } from "src/persistence/saveFileToObjectStore";
 import { validateFileUpload } from "../../model-validators/fileUpload";
 import { validateTags } from "src/model-validators/tags";
-import { userInfo } from "../users/helpers/jwts";
+import { userInfo } from "../helpers/jwts";
 import { getTimestampId } from "src/utilities/getTimestampId";
 
 const baseHandler = async ({
