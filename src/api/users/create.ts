@@ -1,7 +1,7 @@
 import * as AWS from "aws-sdk";
 import * as JwtHelper from "../helpers/jwts";
 import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
-import midWrapper from "../../middleware/midWrapper";
+import midWrapper from "../middleware/midWrapper";
 
 AWS.config.update({ region: "us-west-2" });
 const dynamo = new AWS.DynamoDB.DocumentClient();

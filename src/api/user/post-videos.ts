@@ -8,7 +8,7 @@ import validator from "@middy/validator";
 import { APIGatewayProxyResult } from "aws-lambda";
 import { HttpJsonEvent } from "src/types/HttpJsonEvent";
 import * as createError from "http-errors";
-import { videoUploadJsonBodyParser } from "src/middleware/videoUploadJsonBodyParser";
+import { videoUploadJsonBodyParser } from "src/api/middleware/videoUploadJsonBodyParser";
 import { UserVideo } from "src/models/UserVideo";
 import { createUserVideo } from "src/persistence/createUserVideo";
 import { saveFileToObjectStore } from "src/persistence/saveFileToObjectStore";

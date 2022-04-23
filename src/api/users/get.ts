@@ -1,18 +1,20 @@
-import * as AWS from 'aws-sdk';
-import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
-import midWrapper from '../../middleware/midWrapper';
+import * as AWS from "aws-sdk";
+import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
+import midWrapper from "../middleware/midWrapper";
 
-AWS.config.update({ region: "us-west-2"});
+AWS.config.update({ region: "us-west-2" });
 const dynamo = new AWS.DynamoDB.DocumentClient();
 
-const rawHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
+const rawHandler = async (
+  event: APIGatewayProxyEvent
+): Promise<APIGatewayProxyResult> => {
   const id = event.pathParameters.userId;
-  
+
   const queryParams = {
-    TableName : 'users',
-    KeyConditionExpression: 'userId = :sub',
+    TableName: "users",
+    KeyConditionExpression: "userId = :sub",
     ExpressionAttributeValues: {
-      ':sub': id
+      ":sub": id,
     },
   };
 
@@ -27,7 +29,7 @@ const rawHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyR
 
   return {
     statusCode: 200,
-    body: JSON.stringify(resBody)
+    body: JSON.stringify(resBody),
   };
 };
 
