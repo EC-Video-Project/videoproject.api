@@ -1,5 +1,5 @@
 import { MiddlewareObj } from "@middy/core";
-import * as createError from "http-errors";
+import httpError from "../helpers/httpError";
 
 // Parses all request body fields into JSON, except for
 // "video" field, as that one contains binary data
@@ -15,7 +15,7 @@ export const videoUploadJsonBodyParser = (): MiddlewareObj => {
     } catch (error) {
       console.error("Error parsing JSON body");
       console.error(error);
-      throw new createError.BadRequest(
+      throw new httpError.BadRequest(
         "Error parsing JSON. With exception of 'video' binary field, ensure all fields are valid JSON"
       );
     }

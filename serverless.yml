@@ -107,3 +107,12 @@ functions:
           method: get
           authorizer:
             name: cognitoJwtAuth
+
+  feed_get_candidates:
+    handler: src/api/feed/get-candidates.handler
+    events:
+      - httpApi:
+          path: /feed/candidate
+          method: get
+          authorizer:
+            name: cognitoJwtAuth
