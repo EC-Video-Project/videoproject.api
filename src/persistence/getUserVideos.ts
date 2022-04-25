@@ -27,7 +27,6 @@ export const getUserVideos = async (tags: Tag[] = []): Promise<UserVideo[]> => {
           ":SK": "uservideo#",
         },
         KeyConditionExpression: "PK = :PK AND begins_with(SK, :SK)",
-        ScanIndexForward: true,
       })
     )
   );
@@ -43,7 +42,9 @@ export const getUserVideos = async (tags: Tag[] = []): Promise<UserVideo[]> => {
       uniqueDbItems.push(x);
   });
 
-  const userVideos = uniqueDbItems.map((item) => dbUserVideoToUserVideo(item));
+  const userVideos = uniqueDbItems
+    .map((item) => dbUserVideoToUserVideo(item))
+    .sort((a, b) => b.id.localeCompare(a.id));
 
   return userVideos;
 };
