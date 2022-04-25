@@ -34,10 +34,16 @@ export const getUserVideos = async (tags: Tag[] = []): Promise<UserVideo[]> => {
 
   const allResults = await Promise.all(results);
 
-  let dbItems = allResults.flatMap((x) => x.Items);
-  dbItems = [...new Set(dbItems)]; // remove duplicates
+  const dbItems = allResults.flatMap((x) => x.Items);
 
-  const userVideos = dbItems.map((item) => dbUserVideoToUserVideo(item));
+  // remove duplicates
+  const uniqueDbItems = [];
+  dbItems.forEach((x) => {
+    if (uniqueDbItems.findIndex((y) => y.SK === x.SK) === -1)
+      uniqueDbItems.push(x);
+  });
+
+  const userVideos = uniqueDbItems.map((item) => dbUserVideoToUserVideo(item));
 
   return userVideos;
 };
