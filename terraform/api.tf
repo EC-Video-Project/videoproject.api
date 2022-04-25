@@ -26,6 +26,37 @@ resource "aws_iam_role_policy_attachment" "severless_lambda_dynamodb_full" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess"
 }
 
+resource "aws_iam_policy" "serverless_lambda_exec" {
+  name        = "serverless_api_lambda"
+  description = "required permissions for things accessed by sls api"
+
+  policy = jsonencode({
+    Version : "2012-10-17",
+    Statement : [
+      {
+        Action : [
+          "ssm:GetParameter"
+        ],
+        Effect : "Allow",
+        Resource : "*"
+      },
+      {
+        Action : [
+          "s3:PutObject",
+          "s3:GetObject"
+        ],
+        Effect : "Allow",
+        Resource : "${aws_s3_bucket.video_storage.arn}/*"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "serverless_lambda" {
+  role       = aws_iam_role.serverless_lambda.name
+  policy_arn = aws_iam_policy.serverless_lambda_exec.arn
+}
+
 # Serverless framework will read this parameter, and use the value
 # for all lambdas that make up the API
 resource "aws_ssm_parameter" "serverless_lambda" {
