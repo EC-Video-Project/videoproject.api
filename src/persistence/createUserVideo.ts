@@ -1,21 +1,23 @@
 import { BatchWriteCommand } from "@aws-sdk/lib-dynamodb";
 import { getDynamoClient } from "src/awsClients/dynamo";
-import { Tag } from "src/models/Tag";
+import { tagToDbTag } from "src/models/Tag";
 import { UserVideo } from "src/models/UserVideo";
-import { UserVideoDb } from "src/models/UserVideoDb";
+import { DbUserVideo } from "src/models/DbUserVideo";
 
-const tagToDbTag = (tag: Tag): string => `tag#${tag.type}#${tag.value}`;
-
-const userVideoToDbItems = (userVideo: UserVideo): UserVideoDb[] => {
+const userVideoToDbItems = (userVideo: UserVideo): DbUserVideo[] => {
   const allDbTags = userVideo.tags.map((tag) => tagToDbTag(tag));
-  allDbTags.push("tag#all");
 
-  return allDbTags.map((tag) => ({
-    PK: tag,
+  const buildItem = (PK: string): DbUserVideo => ({
+    PK,
     SK: `uservideo#${userVideo.id}`,
     userId: userVideo.userId,
     tags: allDbTags,
-  }));
+  });
+
+  const items = allDbTags.map((tag) => buildItem(tag));
+  items.push(buildItem("tag#all"));
+
+  return items;
 };
 
 export const createUserVideo = async (userVideo: UserVideo): Promise<void> => {
