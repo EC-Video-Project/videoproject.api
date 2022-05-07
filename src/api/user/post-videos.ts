@@ -10,18 +10,20 @@ import { UserVideo } from "src/models/UserVideo";
 import { createUserVideo } from "src/persistence/createUserVideo";
 import { saveFileToObjectStore } from "src/persistence/saveFileToObjectStore";
 import { validateFileUpload } from "../../model-validators/fileUpload";
-import { validateTags } from "src/model-validators/tags";
 import { userInfo } from "../helpers/jwts";
 import { getTimestampId } from "src/utilities/getTimestampId";
 import httpError from "../helpers/httpError";
+import { Tag } from "src/models/Tag";
 
 const baseHandler = async ({
   body,
   headers,
 }: HttpJsonEvent): Promise<APIGatewayProxyResult> => {
+  let tags: Tag[] = [];
+
   try {
     validateFileUpload(body.video);
-    validateTags(body.tags);
+    tags = body.tags.map((tag) => Tag.parse(tag.type, tag.value));
   } catch (error) {
     throw new httpError.BadRequest(error);
   }
@@ -30,7 +32,7 @@ const baseHandler = async ({
 
   const newVideo: UserVideo = {
     id: getTimestampId(),
-    tags: body.tags,
+    tags,
     userId,
   };
 

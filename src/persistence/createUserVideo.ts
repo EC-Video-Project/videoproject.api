@@ -2,12 +2,12 @@ import { BatchWriteCommand } from "@aws-sdk/lib-dynamodb";
 import { getDynamoClient } from "src/awsClients/dynamo";
 import { tagToDbTag } from "src/models/Tag";
 import { UserVideo } from "src/models/UserVideo";
-import { DbUserVideo } from "src/models/DbUserVideo";
+import { DbUserVideoItem } from "src/models/DbUserVideo";
 
-const userVideoToDbItems = (userVideo: UserVideo): DbUserVideo[] => {
+const userVideoToDbItems = (userVideo: UserVideo): DbUserVideoItem[] => {
   const allDbTags = userVideo.tags.map((tag) => tagToDbTag(tag));
 
-  const buildItem = (PK: string): DbUserVideo => ({
+  const buildItem = (PK: string): DbUserVideoItem => ({
     PK,
     SK: `uservideo#${userVideo.id}`,
     userId: userVideo.userId,

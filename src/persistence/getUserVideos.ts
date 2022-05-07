@@ -1,8 +1,13 @@
 import { QueryCommandOutput } from "@aws-sdk/client-dynamodb";
 import { QueryCommand } from "@aws-sdk/lib-dynamodb";
 import { getDynamoClient } from "src/awsClients/dynamo";
-import { dbTagToTag, Tag, tagToDbTag } from "src/models/Tag";
+import { Tag, tagToDbTag } from "src/models/Tag";
 import { UserVideo } from "src/models/UserVideo";
+
+export const dbTagToTag = (tag: string): Tag => {
+  const parts = tag.split("#");
+  return Tag.parse(parts[1], parts[2]);
+};
 
 const dbUserVideoToUserVideo = (dbEntity): UserVideo => {
   return {
