@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
+    "baseUrl": "./",
     "target": "es6",
     "sourceMap": true,
     "moduleResolution": "node"
