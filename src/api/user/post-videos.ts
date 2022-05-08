@@ -29,15 +29,11 @@ const baseHandler = async ({
   }
 
   const { userId } = userInfo(headers.authorization);
+  const id = getTimestampId();
 
-  const newVideo: UserVideo = {
-    id: getTimestampId(),
-    tags,
-    userId,
-  };
+  const newVideo = new UserVideo(id, tags, userId);
 
   await saveFileToObjectStore(body.video, newVideo.id);
-
   await createUserVideo(newVideo);
 
   return {

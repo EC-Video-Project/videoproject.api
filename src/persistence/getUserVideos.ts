@@ -1,6 +1,7 @@
 import { QueryCommandOutput } from "@aws-sdk/client-dynamodb";
 import { QueryCommand } from "@aws-sdk/lib-dynamodb";
 import { getDynamoClient } from "src/awsClients/dynamo";
+import { DbUserVideoItem } from "src/models/DbUserVideo";
 import { Tag, tagToDbTag } from "src/models/Tag";
 import { UserVideo } from "src/models/UserVideo";
 
@@ -9,13 +10,12 @@ export const dbTagToTag = (tag: string): Tag => {
   return Tag.parse(parts[1], parts[2]);
 };
 
-const dbUserVideoToUserVideo = (dbEntity): UserVideo => {
-  return {
-    id: dbEntity.SK.replace("uservideo#", ""),
-    tags: dbEntity.tags.map((dbTag: string) => dbTagToTag(dbTag)),
-    userId: dbEntity.userId,
-  };
-};
+const dbUserVideoToUserVideo = (dbEntity: DbUserVideoItem): UserVideo =>
+  new UserVideo(
+    dbEntity.SK.replace("uservideo#", ""),
+    dbEntity.tags.map((dbTag: string) => dbTagToTag(dbTag)),
+    dbEntity.userId
+  );
 
 export const getUserVideos = async (tags: Tag[] = []): Promise<UserVideo[]> => {
   const client = getDynamoClient();
