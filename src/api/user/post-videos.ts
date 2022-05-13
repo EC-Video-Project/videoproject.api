@@ -14,6 +14,7 @@ import { userInfo } from "../helpers/jwts";
 import { getTimestampId } from "src/utilities/getTimestampId";
 import httpError from "../helpers/httpError";
 import { Tag } from "src/models/Tag";
+import { createDynamoClient } from "src/awsClients/dynamo";
 
 const baseHandler = async ({
   body,
@@ -34,7 +35,9 @@ const baseHandler = async ({
   const newVideo = new UserVideo(id, tags, userId);
 
   await saveFileToObjectStore(body.video, newVideo.id);
-  await createUserVideo(newVideo);
+
+  const dynamoDocClient = createDynamoClient();
+  await createUserVideo(dynamoDocClient, newVideo);
 
   return {
     statusCode: 200,

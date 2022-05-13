@@ -1,6 +1,6 @@
 import { QueryCommandOutput } from "@aws-sdk/client-dynamodb";
 import { QueryCommand } from "@aws-sdk/lib-dynamodb";
-import { getDynamoClient } from "src/awsClients/dynamo";
+import { createDynamoClient } from "src/awsClients/dynamo";
 import { DbUserVideoItem } from "src/models/DbUserVideo";
 import { Tag, tagToDbTag } from "src/models/Tag";
 import { UserVideo } from "src/models/UserVideo";
@@ -18,7 +18,7 @@ const dbUserVideoToUserVideo = (dbEntity: DbUserVideoItem): UserVideo =>
   );
 
 export const getUserVideos = async (tags: Tag[] = []): Promise<UserVideo[]> => {
-  const client = getDynamoClient();
+  const client = createDynamoClient();
 
   const queryTags = tags.map((tag) => tagToDbTag(tag));
   if (queryTags.length === 0) queryTags.push("tag#all");

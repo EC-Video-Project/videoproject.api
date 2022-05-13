@@ -1,5 +1,7 @@
-import { BatchWriteCommand } from "@aws-sdk/lib-dynamodb";
-import { getDynamoClient } from "src/awsClients/dynamo";
+import {
+  BatchWriteCommand,
+  DynamoDBDocumentClient,
+} from "@aws-sdk/lib-dynamodb";
 import { tagToDbTag } from "src/models/Tag";
 import { UserVideo } from "src/models/UserVideo";
 import { DbUserVideoItem } from "src/models/DbUserVideo";
@@ -20,9 +22,10 @@ const userVideoToDbItems = (userVideo: UserVideo): DbUserVideoItem[] => {
   return items;
 };
 
-export const createUserVideo = async (userVideo: UserVideo): Promise<void> => {
-  const client = getDynamoClient();
-
+export const createUserVideo = async (
+  client: DynamoDBDocumentClient,
+  userVideo: UserVideo
+): Promise<boolean> => {
   const itemsToWriteToDb = userVideoToDbItems(userVideo);
 
   const command = new BatchWriteCommand({
@@ -41,4 +44,6 @@ export const createUserVideo = async (userVideo: UserVideo): Promise<void> => {
     );
     unprocessedItems = output.UnprocessedItems;
   }
+
+  return true;
 };
