@@ -20,9 +20,14 @@ describe("Tag", function () {
     assert.throw(() => Tag.parse("invalidType", "asdf"));
   });
 
-  it("should throw error on create with empty values", function () {
+  it("should throw error on create with empty type parameter", function () {
     assert.throw(() => {
       Tag.parse("", "stuff");
+    });
+  });
+
+  it("should throw error on create with empty value parameter", function () {
+    assert.throw(() => {
       Tag.parse("industry", "");
     });
   });

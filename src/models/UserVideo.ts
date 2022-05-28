@@ -5,7 +5,7 @@ export class UserVideo {
   tags: Tag[] = [];
   userId: string = "";
 
-  constructor(id: string = "", tags: Tag[], userId: string = "") {
+  constructor(id: string = "", tags: Tag[], userId: string) {
     if (!id.trim()) throw "id is required";
     if (!userId.trim()) throw "userId is required";
 
