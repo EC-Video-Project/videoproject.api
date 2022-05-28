@@ -4,17 +4,17 @@ import httpHeaderNormalizer from "@middy/http-header-normalizer";
 import httpMultipartBodyParser from "@middy/http-multipart-body-parser";
 import validator from "@middy/validator";
 import { APIGatewayProxyResult } from "aws-lambda";
-import { HttpJsonEvent } from "src/types/HttpJsonEvent";
+import { HttpJsonEvent } from "src/api/types/HttpJsonEvent";
 import { videoUploadJsonBodyParser } from "src/api/middleware/videoUploadJsonBodyParser";
 import { UserVideo } from "src/models/UserVideo";
 import { createUserVideo } from "src/persistence/createUserVideo";
 import { saveFileToObjectStore } from "src/persistence/saveFileToObjectStore";
-import { validateFileUpload } from "../../model-validators/fileUpload";
 import { userInfo } from "../helpers/jwts";
 import { getTimestampId } from "src/utilities/getTimestampId";
 import httpError from "../helpers/httpError";
 import { Tag } from "src/models/Tag";
 import { createDynamoClient } from "src/awsClients/dynamo";
+import { validateFileUpload } from "../validators/fileUpload";
 
 const baseHandler = async ({
   body,

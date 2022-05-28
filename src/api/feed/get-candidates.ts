@@ -2,7 +2,7 @@ import middy from "@middy/core";
 import jsonBodyParser from "@middy/http-json-body-parser";
 import httpErrorHandler from "@middy/http-error-handler";
 import { APIGatewayProxyResult } from "aws-lambda";
-import { HttpJsonEvent } from "src/types/HttpJsonEvent";
+import { HttpJsonEvent } from "src/api/types/HttpJsonEvent";
 import { getUserVideos } from "src/persistence/getUserVideos";
 import { parseTagsFromQueryString } from "../helpers/parseTagsFromQueryString";
 

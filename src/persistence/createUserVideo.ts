@@ -4,7 +4,7 @@ import {
 } from "@aws-sdk/lib-dynamodb";
 import { tagToDbTag } from "src/models/Tag";
 import { UserVideo } from "src/models/UserVideo";
-import { DbUserVideoItem } from "src/models/DbUserVideo";
+import { DbUserVideoItem } from "src/persistence/types/DbUserVideo";
 
 const userVideoToDbItems = (userVideo: UserVideo): DbUserVideoItem[] => {
   const allDbTags = userVideo.tags.map((tag) => tagToDbTag(tag));
