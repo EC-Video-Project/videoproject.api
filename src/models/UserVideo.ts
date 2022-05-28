@@ -1,9 +1,9 @@
 import { Tag } from "./Tag";
 
 export class UserVideo {
-  id: string = "";
+  id = "";
   tags: Tag[] = [];
-  userId: string = "";
+  userId = "";
 
   constructor(id: string = "", tags: Tag[], userId: string) {
     if (!id.trim()) throw "id is required";
