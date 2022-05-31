@@ -40,17 +40,12 @@ functions:
           authorizer:
             name: cognitoJwtAuth
 
-  getUser:
-    handler: src/api/users/get.handler
-    events:
-      - httpApi:
-          path: /user/{userId}
-          method: get
-          authorizer:
-            name: cognitoJwtAuth
+  #########
+  # /user #
+  #########
 
-  createUser:
-    handler: src/api/users/create.handler
+  user_post:
+    handler: src/api/user/post.handler
     events:
       - httpApi:
           path: /user
@@ -58,23 +53,18 @@ functions:
           authorizer:
             name: cognitoJwtAuth
 
-  updateUser:
-    handler: src/api/users/update.handler
+  user_post_video:
+    handler: src/api/user/post-videos.handler
     events:
       - httpApi:
-          path: /user
-          method: patch
+          path: /user/videos
+          method: post
           authorizer:
             name: cognitoJwtAuth
 
-  deleteUser:
-    handler: src/api/users/delete.handler
-    events:
-      - httpApi:
-          path: /user
-          method: delete
-          authorizer:
-            name: cognitoJwtAuth
+  #########
+  # /auth #
+  #########
 
   auth_token:
     handler: src/api/auth/token.handler
@@ -90,14 +80,9 @@ functions:
           path: /auth/refresh
           method: post
 
-  user_post_video:
-    handler: src/api/user/post-videos.handler
-    events:
-      - httpApi:
-          path: /user/videos
-          method: post
-          authorizer:
-            name: cognitoJwtAuth
+  ##########
+  # /video #
+  ##########
 
   video_get_by_id:
     handler: src/api/video/get-by-id.handler
@@ -107,6 +92,10 @@ functions:
           method: get
           authorizer:
             name: cognitoJwtAuth
+
+  #########
+  # /feed #
+  #########
 
   feed_get_candidates:
     handler: src/api/feed/get-candidates.handler
