@@ -3,7 +3,7 @@ import httpErrorHandler from "@middy/http-error-handler";
 import jsonBodyParser from "@middy/http-json-body-parser";
 import validator from "@middy/validator";
 import { APIGatewayProxyResult } from "aws-lambda";
-import { HttpJsonEvent } from "src/types/HttpJsonEvent";
+import { HttpJsonEvent } from "src/api/types/HttpJsonEvent";
 
 const baseHandler = async (
   event: HttpJsonEvent

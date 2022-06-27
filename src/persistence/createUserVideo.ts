@@ -1,13 +1,15 @@
-import { BatchWriteCommand } from "@aws-sdk/lib-dynamodb";
-import { getDynamoClient } from "src/awsClients/dynamo";
+import {
+  BatchWriteCommand,
+  DynamoDBDocumentClient,
+} from "@aws-sdk/lib-dynamodb";
 import { tagToDbTag } from "src/models/Tag";
 import { UserVideo } from "src/models/UserVideo";
-import { DbUserVideo } from "src/models/DbUserVideo";
+import { DbUserVideoItem } from "src/persistence/types/DbUserVideo";
 
-const userVideoToDbItems = (userVideo: UserVideo): DbUserVideo[] => {
+const userVideoToDbItems = (userVideo: UserVideo): DbUserVideoItem[] => {
   const allDbTags = userVideo.tags.map((tag) => tagToDbTag(tag));
 
-  const buildItem = (PK: string): DbUserVideo => ({
+  const buildItem = (PK: string): DbUserVideoItem => ({
     PK,
     SK: `uservideo#${userVideo.id}`,
     userId: userVideo.userId,
@@ -20,9 +22,10 @@ const userVideoToDbItems = (userVideo: UserVideo): DbUserVideo[] => {
   return items;
 };
 
-export const createUserVideo = async (userVideo: UserVideo): Promise<void> => {
-  const client = getDynamoClient();
-
+export const createUserVideo = async (
+  client: DynamoDBDocumentClient,
+  userVideo: UserVideo
+): Promise<boolean> => {
   const itemsToWriteToDb = userVideoToDbItems(userVideo);
 
   const command = new BatchWriteCommand({
@@ -41,4 +44,6 @@ export const createUserVideo = async (userVideo: UserVideo): Promise<void> => {
     );
     unprocessedItems = output.UnprocessedItems;
   }
+
+  return true;
 };

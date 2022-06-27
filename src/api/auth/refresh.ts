@@ -4,7 +4,7 @@ import jsonBodyParser from "@middy/http-json-body-parser";
 import validator from "@middy/validator";
 import { APIGatewayProxyResult } from "aws-lambda";
 import axios from "axios";
-import { HttpJsonEvent } from "src/types/HttpJsonEvent";
+import { HttpJsonEvent } from "src/api/types/HttpJsonEvent";
 import { getSsmParameter } from "src/utilities/getSsmParameter";
 
 const baseHandler = async (
