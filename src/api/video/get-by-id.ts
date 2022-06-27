@@ -2,7 +2,7 @@ import middy from "@middy/core";
 import validator from "@middy/validator";
 import httpErrorHandler from "@middy/http-error-handler";
 import { APIGatewayProxyResult } from "aws-lambda";
-import { HttpJsonEvent } from "src/types/HttpJsonEvent";
+import { HttpJsonEvent } from "src/api/types/HttpJsonEvent";
 import { getPresignedS3Url } from "src/utilities/getPresignedS3Url";
 import { timestampIdRegex } from "src/utilities/getTimestampId";
 

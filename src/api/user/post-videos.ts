@@ -4,39 +4,40 @@ import httpHeaderNormalizer from "@middy/http-header-normalizer";
 import httpMultipartBodyParser from "@middy/http-multipart-body-parser";
 import validator from "@middy/validator";
 import { APIGatewayProxyResult } from "aws-lambda";
-import { HttpJsonEvent } from "src/types/HttpJsonEvent";
+import { HttpJsonEvent } from "src/api/types/HttpJsonEvent";
 import { videoUploadJsonBodyParser } from "src/api/middleware/videoUploadJsonBodyParser";
 import { UserVideo } from "src/models/UserVideo";
 import { createUserVideo } from "src/persistence/createUserVideo";
 import { saveFileToObjectStore } from "src/persistence/saveFileToObjectStore";
-import { validateFileUpload } from "../../model-validators/fileUpload";
-import { validateTags } from "src/model-validators/tags";
 import { userInfo } from "../helpers/jwts";
 import { getTimestampId } from "src/utilities/getTimestampId";
 import httpError from "../helpers/httpError";
+import { Tag } from "src/models/Tag";
+import { createDynamoClient } from "src/awsClients/dynamo";
+import { validateFileUpload } from "../validators/fileUpload";
 
 const baseHandler = async ({
   body,
   headers,
 }: HttpJsonEvent): Promise<APIGatewayProxyResult> => {
+  let tags: Tag[] = [];
+
   try {
     validateFileUpload(body.video);
-    validateTags(body.tags);
+    tags = body.tags.map((tag) => Tag.parse(tag.type, tag.value));
   } catch (error) {
     throw new httpError.BadRequest(error);
   }
 
   const { userId } = userInfo(headers.authorization);
+  const id = getTimestampId();
 
-  const newVideo: UserVideo = {
-    id: getTimestampId(),
-    tags: body.tags,
-    userId,
-  };
+  const newVideo = new UserVideo(id, tags, userId);
 
   await saveFileToObjectStore(body.video, newVideo.id);
 
-  await createUserVideo(newVideo);
+  const dynamoDocClient = createDynamoClient();
+  await createUserVideo(dynamoDocClient, newVideo);
 
   return {
     statusCode: 200,

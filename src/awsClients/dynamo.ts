@@ -3,13 +3,13 @@ import { DynamoDBDocumentClient } from "@aws-sdk/lib-dynamodb";
 
 const rawDynamoClientConfig = {};
 
-export const getRawDynamoClient = (): DynamoDBClient => {
+export const createRawDynamoClient = (): DynamoDBClient => {
   const rawDynamoClient = new DynamoDBClient(rawDynamoClientConfig);
   return rawDynamoClient;
 };
 
-export const getDynamoClient = (): DynamoDBDocumentClient => {
-  const rawDynamoClient = getRawDynamoClient();
+export const createDynamoClient = (): DynamoDBDocumentClient => {
+  const rawDynamoClient = createRawDynamoClient();
   const dynamoClient = DynamoDBDocumentClient.from(rawDynamoClient);
 
   return dynamoClient;

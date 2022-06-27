@@ -1,5 +1,4 @@
 import { APIGatewayProxyEventQueryStringParameters } from "aws-lambda";
-import { validateTag } from "src/model-validators/tags";
 import { Tag } from "src/models/Tag";
 import httpError from "./httpError";
 
@@ -15,10 +14,7 @@ export const parseTagsFromQueryString = (
       if (tagParts.length !== 2)
         throw new httpError.BadRequest(`Tag malformed: ${tag}`);
 
-      const newTag: Tag = { type: tagParts[0] as any, value: tagParts[1] };
-      validateTag(newTag);
-
-      return newTag;
+      return Tag.parse(tagParts[0], tagParts[1]);
     });
   }
 
