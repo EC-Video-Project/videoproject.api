@@ -1,66 +1,4 @@
-create table UserVideo (
-    id int unsigned auto_increment primary key,
-    title varchar(100) null,
-    videoId binary(16) not null,
-    active bool 1,
-    createdDt datetime not null,
-    updatedDt datetime not null,
-    userId int unsigned not null,
-    isDeleted bool 0,
-    foreign key (userId) references User(id)
-);
-
-create table Posting (
-    id int unsigned auto_increment primary key,
-    title varchar(100) null,
-    videoId binary(16) not null,
-    active bool 1,
-    createdDt datetime not null,
-    updatedDt datetime not null,
-    userId int unsigned not null,
-    isDeleted bool 0,
-    foreign key (userId) references User(id)
-);
-
-create table Application (
-    id int unsigned auto_increment primary key,
-    postingId int unsigned not null,
-    videoId binary(16) not null,
-    retracted bool 0,
-    createdDt datetime not null,
-    updatedDt datetime not null,
-    userId int unsigned not null,
-    isDeleted bool 0,
-    foreign key (postingId) references Posting(id),
-    foreign key (userId) references User(id)
-);
-
--- needs work
-create table EntityTag (
-    entityId int unsigned not null,
-    tagId mediumint unsigned not null,
-    foreign key (tagId) references Tag(id)
-);
-
-create table Tag (
-    id mediumint auto_increment primary key,
-    name varchar(25) not null,
-    type varchar(8) not null, -- industry,skill,location,hours
-);
-
-create table Star (
-    entityId int unsigned not null,
-    userId int unsigned not null,
-    primary key(entityId, userId)
-);
-
-create table View (
-    entityId int unsigned not null,
-    userId int unsigned not null,
-    primary key(entityId, userId)
-);
-
-create table User (
+create TABLE if NOT exists User (
     id int unsigned auto_increment primary key,
     authId binary(16) not null, -- research, is an aws provided guid a string or binary type?
     displayName varchar(50) not null,
@@ -72,11 +10,99 @@ create table User (
     profileLinks json not null
 );
 
-create table Invitations (
+create table if NOT exists Video (
+    id int unsigned auto_increment primary key,
+    s3Id binary(16) not null,
+    userId int unsigned not null,
+    createdDt datetime not null,
+    updatedDt datetime not null,
+    isDeleted BOOL default 0,
+    
+    foreign key (userId) references User(id)
+);
+
+create table if NOT exists Posting (
+    id int unsigned auto_increment primary key,
+    theStatus tinyint unsigned default 0,
+    title varchar(50) not null,
+    videoId int unsigned not null,
+    userId int unsigned not null,
+    createdDt datetime not null,
+    updatedDt datetime not null,
+    
+    foreign key (videoId) references Video(id),
+    foreign key (userId) references User(id)
+);
+
+create table if NOT exists Introduction (
+    id int unsigned auto_increment primary key,
+    theStatus tinyint unsigned default 0,
+    videoId int unsigned not null,
+    userId int unsigned not null,
+    createdDt datetime not null,
+    updatedDt datetime not null,
+    
+    foreign key (videoId) references Video(id),
+    foreign key (userId) references User(id)
+);
+
+create table if NOT exists Application (
+    id int unsigned auto_increment primary key,
+    postingId int unsigned not null,
+    theStatus tinyint unsigned default 0,
+    videoId int unsigned not null,
+    userId int unsigned not null,
+    createdDt datetime not null,
+    updatedDt datetime not null,
+    
+    foreign key (postingId) references Posting(id),
+    foreign key (videoId) references Video(id),
+    foreign key (userId) references User(id)
+);
+
+create Table if NOT exists Tag (
+    id mediumint unsigned auto_increment primary key,
+    name varchar(25) not null,
+    type varchar(8) not null, -- industry,skill,location,hours
+);
+
+create table if NOT exists PostingTag (
+    id int unsigned not null,
+    tag mediumint unsigned not null,
+
+    foreign key (id) references Posting(id),
+    foreign key (tag) references Tag(id)
+);
+
+create table if NOT exists IntroductionTag (
+    id int unsigned not null,
+    tag mediumint unsigned not null,
+
+    foreign key (id) references Introduction(id),
+    foreign key (tag) references Tag(id)
+);
+
+create table if NOT exists Star (
+    entityId int unsigned not null, -- how to index this
+    userId int unsigned not null,
+    
+    foreign key (userId) references User(id)
+);
+
+create table if NOT exists View (
+    entityId int unsigned not null,
+    userId int unsigned not null,
+
+    foreign key (userId) references User(id)
+);
+
+create table if NOT exists Invitation (
     id int unsigned auto_increment primary key,
     sender int unsigned not null,
     invitee int unsigned not null,
-    accepted bool 0,
+    accepted bool default 0,
+    message varchar(150) null,
+    
     foreign key (sender) references User(id),
     foreign key (invitee) references User(id)
 );
