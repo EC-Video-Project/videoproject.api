@@ -18,6 +18,3 @@ provider "aws" {
   region = var.aws_region
 }
 
-module "db" {
-  source = "./modules/db"
-}
