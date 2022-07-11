@@ -16,19 +16,19 @@ provider:
   memorySize: 128
   region: us-west-2
   iam:
-    role: ${ssm:/api/lambdaExecutionRole}
+    role: ${ssm:api_lambdaExecutionRole}
   httpApi:
     cors: true
     authorizers:
       cognitoJwtAuth:
         type: jwt
         identitySource: $request.header.Authorization
-        issuerUrl: ${ssm:/cognito/issuerUrl} # pulling value out of parameter store
+        issuerUrl: ${ssm:cognito_issuerUrl} # pulling value out of parameter store
         # would be nice to split a StringList param store var, but cant get it working
         # audience: { "Fn::Split": [",", "${ssm:/cognito/audience}"] }
         audience:
-          - ${ssm:/cognito/devlocal/clientId}
-          - ${ssm:/cognito/mobiledevlocal/clientId}
+          - ${ssm:cognito_devlocal_clientId}
+          - ${ssm:cognito_mobiledevlocal_clientId}
 
 functions:
   hello:

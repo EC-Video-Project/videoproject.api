@@ -9,7 +9,7 @@ export const saveFileToObjectStore = async (
   try {
     const client = new S3Client({});
     const command = new PutObjectCommand({
-      Bucket: await getSsmParameter("/video/storageBucketName"),
+      Bucket: await getSsmParameter("obj_bucket_name"),
       Key: newVideoId,
       Body: video.content,
       ContentType: video.mimetype,

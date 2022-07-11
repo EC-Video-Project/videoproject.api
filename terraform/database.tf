@@ -4,8 +4,8 @@ resource "random_password" "main_db_pw" {
   override_special = "_!%^"
 }
 
-resource "aws_ssm_parameter" "main_db_pw" {
-  name  = "/db/adminPw"
+resource "aws_ssm_parameter" "db_adminPw" {
+  name  = "db_adminPw"
   type  = "SecureString"
   value = random_password.main_db_pw.result
 }
@@ -16,7 +16,7 @@ resource "aws_db_instance" "main_db" {
   instance_class                      = "db.t4g.micro"
   identifier                          = "main"
   username                            = "admin"
-  password                            = aws_ssm_parameter.main_db_pw.value
+  password                            = aws_ssm_parameter.db_adminPw.value
   skip_final_snapshot                 = true
   allocated_storage                   = 20
   max_allocated_storage               = 150
@@ -31,8 +31,8 @@ resource "aws_db_instance" "main_db" {
   # deletion_protection = true
 }
 
-resource "aws_ssm_parameter" "main_db_url" {
-  name  = "/db/url"
+resource "aws_ssm_parameter" "db_url" {
+  name  = "db_url"
   type  = "String"
   value = aws_db_instance.main_db.address
 }
