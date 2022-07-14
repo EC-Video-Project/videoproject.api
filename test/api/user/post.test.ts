@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { handler } from "src/api/user/post";
+import { handler } from "src/api/endpoints/user/post";
 
 const DEFAULT_CONTEXT = {} as any;
 

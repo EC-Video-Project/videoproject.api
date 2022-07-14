@@ -34,17 +34,9 @@ functions:
   #########
   # /user #
   #########
-  getUser:
-    handler: src/api/users/get.handler
-    events:
-      - httpApi:
-          path: /user/{userId}
-          method: get
-          authorizer:
-            name: cognitoJwtAuth
 
   user_post:
-    handler: src/api/user/post.handler
+    handler: src/api/endpoints/user/post.handler
     events:
       - httpApi:
           path: /user
@@ -53,7 +45,7 @@ functions:
             name: cognitoJwtAuth
 
   user_post_video:
-    handler: src/api/user/post-videos.handler
+    handler: src/api/endpoints/user/post-videos.handler
     events:
       - httpApi:
           path: /user/videos
@@ -66,14 +58,14 @@ functions:
   #########
 
   auth_token:
-    handler: src/api/auth/token.handler
+    handler: src/api/endpoints/auth/token.handler
     events:
       - httpApi:
           path: /auth/token
           method: post
 
   auth_refresh:
-    handler: src/api/auth/refresh.handler
+    handler: src/api/endpoints/auth/refresh.handler
     events:
       - httpApi:
           path: /auth/refresh
@@ -84,7 +76,7 @@ functions:
   ##########
 
   video_get_by_id:
-    handler: src/api/video/get-by-id.handler
+    handler: src/api/endpoints/video/get-by-id.handler
     events:
       - httpApi:
           path: /video/{videoId}
@@ -97,7 +89,7 @@ functions:
   #########
 
   feed_get_candidates:
-    handler: src/api/feed/get-candidates.handler
+    handler: src/api/endpoints/feed/get-candidates.handler
     events:
       - httpApi:
           path: /feed/candidate
