@@ -58,12 +58,12 @@ resource "aws_cognito_user_pool_client" "client_mobiledevlocal" {
   generate_secret                      = false
 }
 
-data "aws_ssm_parameter" "google_client_id" {
-  name = "/cognito/google/clientId"
+data "aws_ssm_parameter" "cognito_google_clientId" {
+  name = "cognito_google_clientId"
 }
 
-data "aws_ssm_parameter" "google_client_secret" {
-  name = "/cognito/google/clientSecret"
+data "aws_ssm_parameter" "cognito_google_clientSecret" {
+  name = "cognito_google_clientSecret"
 }
 
 resource "aws_cognito_identity_provider" "provider_google" {
@@ -72,8 +72,8 @@ resource "aws_cognito_identity_provider" "provider_google" {
   provider_type = "Google"
   provider_details = {
     authorize_scopes = "profile email openid"
-    client_id        = data.aws_ssm_parameter.google_client_id.value
-    client_secret    = data.aws_ssm_parameter.google_client_secret.value
+    client_id        = data.aws_ssm_parameter.cognito_google_clientId.value
+    client_secret    = data.aws_ssm_parameter.cognito_google_clientSecret.value
     # this stuff comes from cognito -- adding it here so TF doesn't "detect" it everytime you run apply
     attributes_url                = "https://people.googleapis.com/v1/people/me?personFields="
     attributes_url_add_attributes = "true"
@@ -92,12 +92,12 @@ resource "aws_cognito_identity_provider" "provider_google" {
   }
 }
 
-data "aws_ssm_parameter" "facebook_client_id" {
-  name = "/cognito/facebook/clientId"
+data "aws_ssm_parameter" "cognito_facebook_clientId" {
+  name = "cognito_facebook_clientId"
 }
 
-data "aws_ssm_parameter" "facebook_client_secret" {
-  name = "/cognito/facebook/clientSecret"
+data "aws_ssm_parameter" "cognito_facebook_clientSecret" {
+  name = "cognito_facebook_clientSecret"
 }
 
 resource "aws_cognito_identity_provider" "provider_facebook" {
@@ -106,8 +106,8 @@ resource "aws_cognito_identity_provider" "provider_facebook" {
   provider_type = "Facebook"
   provider_details = {
     authorize_scopes = "public_profile,email"
-    client_id        = data.aws_ssm_parameter.facebook_client_id.value
-    client_secret    = data.aws_ssm_parameter.facebook_client_secret.value
+    client_id        = data.aws_ssm_parameter.cognito_facebook_clientId.value
+    client_secret    = data.aws_ssm_parameter.cognito_facebook_clientSecret.value
     # this stuff comes from cognito -- adding it here so TF doesn't "detect" it everytime you run apply
     attributes_url                = "https://graph.facebook.com/v12.0/me?fields="
     attributes_url_add_attributes = "true"
@@ -129,46 +129,46 @@ resource "aws_cognito_user_pool_domain" "main" {
   user_pool_id = aws_cognito_user_pool.userpool.id
 }
 
-resource "aws_ssm_parameter" "auth_issuer_url" {
-  name  = "/cognito/issuerUrl"
+resource "aws_ssm_parameter" "cognito_issuerUrl" {
+  name  = "cognito_issuerUrl"
   type  = "String"
   value = "https://${aws_cognito_user_pool.userpool.endpoint}"
 }
 
-resource "aws_ssm_parameter" "auth_devlocal_clientId" {
-  name  = "/cognito/devlocal/clientId"
+resource "aws_ssm_parameter" "cognito_devlocal_clientId" {
+  name  = "cognito_devlocal_clientId"
   type  = "String"
   value = aws_cognito_user_pool_client.client_devlocal.id
 }
 
-resource "aws_ssm_parameter" "auth_devlocal_clientSecret" {
-  name  = "/cognito/devlocal/clientSecret"
+resource "aws_ssm_parameter" "cognito_devlocal_clientSecret" {
+  name  = "cognito_devlocal_clientSecret"
   type  = "SecureString"
   value = aws_cognito_user_pool_client.client_devlocal.client_secret
 }
 
-resource "aws_ssm_parameter" "auth_devlocal_redirect_url" {
-  name  = "/cognito/devlocal/redirectUrl"
+resource "aws_ssm_parameter" "cognito_devlocal_redirectUrl" {
+  name  = "cognito_devlocal_redirectUrl"
   type  = "String"
   value = one(aws_cognito_user_pool_client.client_devlocal.callback_urls)
 }
 
-resource "aws_ssm_parameter" "auth_mobiledevlocal_clientId" {
-  name  = "/cognito/mobiledevlocal/clientId"
+resource "aws_ssm_parameter" "cognito_mobiledevlocal_clientId" {
+  name  = "cognito_mobiledevlocal_clientId"
   type  = "String"
   value = aws_cognito_user_pool_client.client_mobiledevlocal.id
 }
 
-resource "aws_ssm_parameter" "auth_mobiledevlocal_redirect_url" {
-  name  = "/cognito/mobiledevlocal/redirectUrl"
+resource "aws_ssm_parameter" "cognito_mobiledevlocal_redirectUrl" {
+  name  = "cognito_mobiledevlocal_redirectUrl"
   type  = "String"
   value = one(aws_cognito_user_pool_client.client_mobiledevlocal.callback_urls)
 }
 
 data "aws_region" "current" {}
 
-resource "aws_ssm_parameter" "auth_domain" {
-  name  = "/cognito/domain"
+resource "aws_ssm_parameter" "cognito_domain" {
+  name  = "cognito_domain"
   type  = "String"
   value = "https://${var.cognito_domain}.auth.${data.aws_region.current.name}.amazoncognito.com"
 }

@@ -10,10 +10,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@aws-sdk/client-dynamodb": "^3.67.0",
     "@aws-sdk/client-s3": "^3.58.0",
     "@aws-sdk/client-ssm": "^3.55.0",
-    "@aws-sdk/lib-dynamodb": "^3.67.0",
     "@aws-sdk/s3-request-presigner": "^3.67.0",
     "@middy/core": "^2.5.7",
     "@middy/http-error-handler": "^2.5.7",
@@ -25,6 +23,7 @@
     "axios": "^0.26.1",
     "http-errors": "^2.0.0",
     "jwt-decode": "^3.1.2",
+    "mysql2": "^2.3.3",
     "nanoid": "^3.3.2"
   },
   "devDependencies": {

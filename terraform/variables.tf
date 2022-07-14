@@ -9,3 +9,9 @@ variable "cognito_domain" {
   type        = string
   default     = "videoproject-dev2"
 }
+
+variable "environment" {
+  description = "Name of environment"
+  type        = string
+  default     = "dev"
+}

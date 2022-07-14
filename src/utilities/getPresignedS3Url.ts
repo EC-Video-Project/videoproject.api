@@ -6,7 +6,7 @@ import { createS3Client } from "src/awsClients/s3";
 export const getPresignedS3Url = async (filename: string): Promise<string> => {
   const client = createS3Client();
   const command = new GetObjectCommand({
-    Bucket: await getSsmParameter("/video/storageBucketName"),
+    Bucket: await getSsmParameter("obj_bucket_name"),
     Key: filename,
   });
 

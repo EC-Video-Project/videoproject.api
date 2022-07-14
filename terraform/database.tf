@@ -1,56 +1,44 @@
-locals {
-  videos_tags_pk     = "PK"
-  videos_tags_sk     = "SK"
-  videos_tags_userId = "userId"
-
-  users_pk = "PK"
-  users_sk = "SK"
+resource "random_password" "main_db_pw" {
+  length           = 16
+  special          = true
+  override_special = "_!%^"
 }
 
-resource "aws_dynamodb_table" "videos_and_tags" {
-  name         = "VideosTags"
-  billing_mode = "PAY_PER_REQUEST"
-
-  hash_key  = local.videos_tags_pk
-  range_key = local.videos_tags_sk
-
-  attribute {
-    name = local.videos_tags_pk
-    type = "S"
-  }
-
-  attribute {
-    name = local.videos_tags_sk
-    type = "S"
-  }
-
-  attribute {
-    name = local.videos_tags_userId
-    type = "S"
-  }
-
-  global_secondary_index {
-    name            = "userId"
-    hash_key        = local.videos_tags_userId
-    range_key       = local.videos_tags_sk
-    projection_type = "ALL"
-  }
+resource "aws_ssm_parameter" "db_adminPw" {
+  name  = "db_adminPw"
+  type  = "SecureString"
+  value = random_password.main_db_pw.result
 }
 
-resource "aws_dynamodb_table" "users" {
-  name         = "Users"
-  billing_mode = "PAY_PER_REQUEST"
+resource "aws_db_instance" "main_db" {
+  engine                              = "mysql"
+  engine_version                      = "8.0.28"
+  instance_class                      = "db.t4g.micro"
+  identifier                          = "main"
+  username                            = "admin"
+  password                            = aws_ssm_parameter.db_adminPw.value
+  skip_final_snapshot                 = true
+  allocated_storage                   = 20
+  max_allocated_storage               = 150
+  auto_minor_version_upgrade          = true
+  iam_database_authentication_enabled = true
+  monitoring_interval                 = 0
+  multi_az                            = false
+  publicly_accessible                 = true
+  storage_encrypted                   = true
+  vpc_security_group_ids              = ["sg-07b34e3060db9fc89"] # hard coded to existing sg id for now...
+  # parameter_group_name = ""
+  # deletion_protection = true
+}
 
-  hash_key  = local.users_pk
-  range_key = local.users_sk
+resource "aws_ssm_parameter" "db_url" {
+  name  = "db_url"
+  type  = "String"
+  value = aws_db_instance.main_db.address
+}
 
-  attribute {
-    name = local.users_pk
-    type = "S"
-  }
-
-  attribute {
-    name = local.users_sk
-    type = "S"
-  }
+resource "aws_ssm_parameter" "db_name" {
+  name  = "db_name"
+  type  = "String"
+  value = "codename-${var.environment}"
 }

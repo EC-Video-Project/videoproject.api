@@ -59,8 +59,8 @@ resource "aws_iam_role_policy_attachment" "serverless_lambda" {
 
 # Serverless framework will read this parameter, and use the value
 # for all lambdas that make up the API
-resource "aws_ssm_parameter" "serverless_lambda" {
-  name  = "/api/lambdaExecutionRole"
+resource "aws_ssm_parameter" "api_lambdaExecutionRole" {
+  name  = "api_lambdaExecutionRole"
   type  = "String"
   value = aws_iam_role.serverless_lambda.arn
 }

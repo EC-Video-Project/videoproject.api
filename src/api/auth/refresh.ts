@@ -18,13 +18,13 @@ const baseHandler = async (
   // Setup data object to send to cognito TOKEN endpoint
   const data = new URLSearchParams();
   data.append("grant_type", "refresh_token");
-  data.append("client_id", await getSsmParameter("/cognito/devlocal/clientId"));
+  data.append("client_id", await getSsmParameter("cognito_devlocal_clientId"));
   data.append("refresh_token", refresh_token);
 
   // Build an encoded string to use for authentication w/ cognito TOKEN endpoint
-  const cognitoClientId = await getSsmParameter("/cognito/devlocal/clientId");
+  const cognitoClientId = await getSsmParameter("cognito_devlocal_clientId");
   const cognitoClientSecret = await getSsmParameter(
-    "/cognito/devlocal/clientSecret",
+    "cognito_devlocal_clientSecret",
     true
   );
   const encodedAuthorizationStr = Buffer.from(
@@ -32,7 +32,7 @@ const baseHandler = async (
   ).toString("base64");
 
   return axios
-    .post(`${await getSsmParameter("/cognito/domain")}/oauth2/token`, data, {
+    .post(`${await getSsmParameter("cognito_domain")}/oauth2/token`, data, {
       headers: {
         Authorization: `Basic ${encodedAuthorizationStr}`,
       },
