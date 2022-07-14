@@ -1,49 +1,21 @@
-import {
-  BatchWriteCommand,
-  DynamoDBDocumentClient,
-} from "@aws-sdk/lib-dynamodb";
-import { tagToDbTag } from "src/models/Tag";
-import { UserVideo } from "src/models/UserVideo";
-import { DbUserVideoItem } from "src/persistence/types/DbUserVideo";
+import { Introduction, IntroductionStatus } from "src/models/Introduction";
+import mysql from "mysql2";
+import { getSsmParameter } from "src/utilities/getSsmParameter";
 
-const userVideoToDbItems = (userVideo: UserVideo): DbUserVideoItem[] => {
-  const allDbTags = userVideo.tags.map((tag) => tagToDbTag(tag));
-
-  const buildItem = (PK: string): DbUserVideoItem => ({
-    PK,
-    SK: `uservideo#${userVideo.id}`,
-    userId: userVideo.userId,
-    tags: allDbTags,
+export const createIntroduction = async (userVideo: Introduction) => {
+  throw "Not IMplemented";
+  const conn = mysql.createConnection({
+    host: await getSsmParameter("db_url"),
+    user: await getSsmParameter("admin"),
+    database: await getSsmParameter("db_name"),
   });
 
-  const items = allDbTags.map((tag) => buildItem(tag));
-  items.push(buildItem("tag#all"));
+  const sql = `
+    insert into Introduction
+        (itemStatus, videoId, userId)
+    values
+        (?, ?, ?)
+    `;
 
-  return items;
-};
-
-export const createUserVideo = async (
-  client: DynamoDBDocumentClient,
-  userVideo: UserVideo
-): Promise<boolean> => {
-  const itemsToWriteToDb = userVideoToDbItems(userVideo);
-
-  const command = new BatchWriteCommand({
-    RequestItems: {
-      VideosTags: itemsToWriteToDb.map((Item) => ({ PutRequest: { Item } })),
-    },
-  });
-
-  const result = await client.send(command);
-
-  // Per AWS docs, it's unlikely, but we gotta rerun request if some items fail
-  let unprocessedItems = result.UnprocessedItems;
-  while (unprocessedItems && Object.keys(unprocessedItems).length > 0) {
-    const output = await client.send(
-      new BatchWriteCommand({ RequestItems: unprocessedItems })
-    );
-    unprocessedItems = output.UnprocessedItems;
-  }
-
-  return true;
+  conn.execute(sql, [IntroductionStatus.Active, userVideo.userId]);
 };

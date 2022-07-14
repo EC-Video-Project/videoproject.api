@@ -6,46 +6,35 @@ import validator from "@middy/validator";
 import { APIGatewayProxyResult } from "aws-lambda";
 import { HttpJsonEvent } from "src/api/types/HttpJsonEvent";
 import { videoUploadJsonBodyParser } from "src/api/middleware/videoUploadJsonBodyParser";
-import { UserVideo } from "src/models/UserVideo";
-import { createUserVideo } from "src/persistence/createUserVideo";
-import { saveFileToObjectStore } from "src/persistence/saveFileToObjectStore";
-import { userInfo } from "../helpers/jwts";
-import { getTimestampId } from "src/utilities/getTimestampId";
-import httpError from "../helpers/httpError";
-import { Tag } from "src/models/Tag";
-import { createDynamoClient } from "src/awsClients/dynamo";
-import { validateFileUpload } from "../validators/fileUpload";
 
 const baseHandler = async ({
   body,
   headers,
 }: HttpJsonEvent): Promise<APIGatewayProxyResult> => {
-  let tags: Tag[] = [];
+  throw "not implemented";
+  // let tags: Tag[] = [];
 
-  try {
-    validateFileUpload(body.video);
-    tags = body.tags.map((tag) => Tag.parse(tag.type, tag.value));
-  } catch (error) {
-    throw new httpError.BadRequest(error);
-  }
+  // try {
+  //   validateFileUpload(body.video);
+  //   tags = body.tags.map((tag) => Tag.parse(tag.type, tag.value));
+  // } catch (error) {
+  //   throw new httpError.BadRequest(error);
+  // }
 
-  const { userId } = userInfo(headers.authorization);
-  const id = getTimestampId();
+  // const { userId } = userInfo(headers.authorization);
+  // const id = getTimestampId();
 
-  const newVideo = new UserVideo(id, tags, userId);
+  // const newVideo = new Introduction(id, tags, userId);
 
-  await saveFileToObjectStore(body.video, newVideo.id);
+  // await saveFileToObjectStore(body.video, newVideo.id);
 
-  const dynamoDocClient = createDynamoClient();
-  await createUserVideo(dynamoDocClient, newVideo);
-
-  return {
-    statusCode: 200,
-    body: JSON.stringify({
-      status: "Success",
-      newVideo,
-    }),
-  };
+  // return {
+  //   statusCode: 200,
+  //   body: JSON.stringify({
+  //     status: "Success",
+  //     newVideo,
+  //   }),
+  // };
 };
 
 // can we generate this from typescript definitions?

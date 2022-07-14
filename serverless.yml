@@ -31,15 +31,6 @@ provider:
           - ${ssm:cognito_mobiledevlocal_clientId}
 
 functions:
-  hello:
-    handler: src/api/testHandler.handler
-    events:
-      - httpApi:
-          path: /hello
-          method: get
-          authorizer:
-            name: cognitoJwtAuth
-
   getUser:
     handler: src/api/users/get.handler
     events:
