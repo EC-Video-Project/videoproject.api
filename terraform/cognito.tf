@@ -22,6 +22,18 @@ resource "aws_cognito_user_pool" "userpool" {
   username_configuration {
     case_sensitive = false
   }
+  schema {
+    attribute_data_type      = "String"
+    developer_only_attribute = false
+    mutable                  = true
+    name                     = "userid"
+    required                 = false
+
+    string_attribute_constraints {
+      min_length = 0
+      max_length = 32
+    }
+  }
 }
 
 resource "aws_cognito_user_pool_client" "client_devlocal" {
