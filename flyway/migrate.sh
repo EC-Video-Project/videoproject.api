@@ -1,7 +1,7 @@
 #!/bin/bash          
 
 FLYWAY_URL=$(aws ssm get-parameter --query Parameter.Value --output text --name db_url)
-FLYWAY_USER=admin
+FLYWAY_USER=$(aws ssm get-parameter --query Parameter.Value --output text --name db_adminUsername)
 FLYWAY_ADMINPW=$(aws ssm get-parameter --query Parameter.Value --with-decryption --output text --name db_adminPw)
 FLYWAY_DEFAULT_SCHEMA=$(aws ssm get-parameter --query Parameter.Value --output text --name db_name)
 

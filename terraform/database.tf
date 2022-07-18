@@ -10,12 +10,18 @@ resource "aws_ssm_parameter" "db_adminPw" {
   value = random_password.main_db_pw.result
 }
 
+resource "aws_ssm_parameter" "db_adminUsername" {
+  name  = "db_adminUsername"
+  type  = "String"
+  value = "cnadmin"
+}
+
 resource "aws_db_instance" "main_db" {
-  engine                              = "mysql"
-  engine_version                      = "8.0.28"
+  engine                              = "postgres"
+  engine_version                      = "14.2"
   instance_class                      = "db.t4g.micro"
   identifier                          = "main"
-  username                            = "admin"
+  username                            = aws_ssm_parameter.db_adminUsername.value
   password                            = aws_ssm_parameter.db_adminPw.value
   skip_final_snapshot                 = true
   allocated_storage                   = 20
