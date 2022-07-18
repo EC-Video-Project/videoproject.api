@@ -42,9 +42,3 @@ resource "aws_ssm_parameter" "db_url" {
   type  = "String"
   value = aws_db_instance.main_db.address
 }
-
-resource "aws_ssm_parameter" "db_name" {
-  name  = "db_name"
-  type  = "String"
-  value = "codename-${var.environment}"
-}
