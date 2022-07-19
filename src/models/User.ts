@@ -1,4 +1,5 @@
 import { DisplayNameRegex, EmailRegex, PhoneRegex } from "src/utilities/regex";
+import { validate as uuidValidate } from "uuid";
 
 export class ProfileLink {
   type: string;
@@ -11,7 +12,8 @@ export class ProfileLink {
 }
 
 export class User {
-  id: number;
+  id: string;
+  cognitoUsername: string;
   displayName: string;
   email: string;
   phone: string;
@@ -20,22 +22,16 @@ export class User {
   signupDate: Date;
   profileLinks: ProfileLink[] = [];
 
-  static new(data: {
-    displayName: string;
-    email: string;
-    phone: string;
-    employerMode: boolean;
-    bio?: string;
-    profileLinks?: ProfileLink[];
-  }): User {
+  static new(data: Omit<User, "signupDate">): User {
     const user: User = {
-      id: -1,
+      id: data.id,
+      cognitoUsername: data.cognitoUsername,
       displayName: data.displayName
         .split(" ")
         .filter((x) => !!x)
         .join(" "), // remove whitespace
       email: data.email,
-      phone: data.phone.replace(/[\(\) -]/, ""), // strip out common non-numeric characters
+      phone: data.phone.replace(/[() -]/, ""), // strip out common non-numeric characters
       employerMode: data.employerMode,
       bio: data.bio ?? "",
       signupDate: new Date(),
@@ -48,7 +44,7 @@ export class User {
   }
 
   static validate(user: User): void {
-    if (user.id === undefined) throw "missing id";
+    if (!uuidValidate(user.id)) throw "invalid user id -- must be a uuid";
     if (!DisplayNameRegex.test(user.displayName)) throw "invalid display name";
     if (!EmailRegex.test(user.email)) throw "invalid email";
     if (!PhoneRegex.test(user.phone)) throw "invalid phone";

@@ -5,14 +5,18 @@ import validator from "@middy/validator";
 import { APIGatewayProxyResult } from "aws-lambda";
 import { HttpJsonEvent } from "src/api/types/HttpJsonEvent";
 import { User } from "src/models/User";
+import { createUser } from "src/persistence/user/createUser";
 
 const baseHandler = async (
   event: HttpJsonEvent
 ): Promise<APIGatewayProxyResult> => {
   let user: User;
+  const cognitoUsername = event.requestContext.authorizer.jwt.claims.username;
 
   try {
     user = User.new({
+      id: event.requestContext.authorizer.jwt.claims.sub,
+      cognitoUsername: cognitoUsername,
       displayName: event.body.displayName,
       email: event.body.email,
       phone: event.body.phone,
@@ -21,13 +25,27 @@ const baseHandler = async (
       profileLinks: event.body.profileLinks,
     });
   } catch (e) {
-    return { statusCode: 400, body: JSON.stringify(e) };
+    console.info(e);
+    console.info(event);
+    return { statusCode: 400, body: JSON.stringify({ message: e }) };
   }
 
-  return {
-    statusCode: 201,
-    body: JSON.stringify({ message: "The endpoint works!", body: event.body }),
-  };
+  try {
+    await createUser(user);
+
+    return {
+      statusCode: 201,
+      body: JSON.stringify({
+        message: "User profile created successfully!",
+        user,
+      }),
+    };
+  } catch (e) {
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ message: e }),
+    };
+  }
 };
 
 const inputSchema = {
@@ -42,10 +60,14 @@ const inputSchema = {
         employerMode: { type: "boolean" },
         bio: { type: "string" },
         profileLinks: {
-          type: "object",
-          properties: {
-            type: { type: "string" },
-            url: { type: "string" },
+          type: "array",
+          items: {
+            type: "object",
+            properties: {
+              type: { type: "string" },
+              url: { type: "string" },
+            },
+            required: ["type", "url"],
           },
         },
       },
