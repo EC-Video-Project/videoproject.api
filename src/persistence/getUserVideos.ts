@@ -1,8 +1,3 @@
-import { Tag } from "src/models/Tag";
-import { Introduction } from "src/models/Introduction";
-
-export const getUserVideos = async (
-  tags: Tag[] = []
-): Promise<Introduction[]> => {
+export const getUserVideos = async () => {
   throw "Not implemented";
 };

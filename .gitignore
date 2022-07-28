@@ -22,3 +22,6 @@ bin
 
 # Keys
 *.pem
+
+# other
+.local_env

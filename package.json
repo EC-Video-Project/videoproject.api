@@ -5,7 +5,9 @@
   "main": "handler.js",
   "scripts": {
     "dev": "serverless offline --ignoreJWTSignature",
-    "test": "mocha -r ts-node/register -r tsconfig-paths/register -r test/hooks.ts './test/**/*'"
+    "unit-test": "mocha -r ts-node/register -r tsconfig-paths/register -r test/hooks.ts './test/unit/**/*'",
+    "integration-test": "mocha -r ts-node/register -r tsconfig-paths/register -r test/hooks.ts './test/integration/**/*'",
+    "run-sandbox": "mocha -r ts-node/register -r tsconfig-paths/register -r test/hooks.ts './test/sandbox.ts'"
   },
   "author": "",
   "license": "ISC",
@@ -23,8 +25,9 @@
     "axios": "^0.26.1",
     "http-errors": "^2.0.0",
     "jwt-decode": "^3.1.2",
-    "mysql2": "^2.3.3",
-    "nanoid": "^3.3.2"
+    "nanoid": "^3.3.2",
+    "pg": "^8.7.3",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.93",
@@ -32,7 +35,9 @@
     "@types/http-errors": "^1.8.2",
     "@types/mocha": "^9.1.0",
     "@types/node": "^17.0.21",
+    "@types/pg": "^8.6.5",
     "@types/sinon": "^10.0.11",
+    "@types/uuid": "^8.3.4",
     "chai": "^4.3.6",
     "mocha": "^9.2.1",
     "serverless-bundle": "^5.3.0",

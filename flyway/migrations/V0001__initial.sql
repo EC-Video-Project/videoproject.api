@@ -1,115 +1,121 @@
-create TABLE if NOT exists User (
-    id int unsigned auto_increment primary key,
-    authId binary(16) not null,
-    displayName varchar(50) not null,
-    email varchar(50) not null,
-    phone varchar(25) not null,
-    employerMode bool not null,
-    bio varchar(500) null,
-    signupDate datetime(2) NOT null DEFAULT CURRENT_TIMESTAMP(2),
-    profileLinks json null
+create TABLE if NOT exists AppUser (
+    "id" uuid primary key,
+    "cognitoUsername" text not null,
+    "displayName" text not null,
+    "email" text not null,
+    "phone" text not null,
+    "employerMode" boolean not null,
+    "bio" text null,
+    "signupDate" timestamp NOT null DEFAULT (now() at time zone 'utc'),
+    "profileLinks" json null
 );
 
 create table if NOT exists Video (
-    id int unsigned auto_increment primary key,
-    s3Id binary(16) not null,
-    userId int unsigned not null,
-    createdDt datetime(2) NOT null DEFAULT CURRENT_TIMESTAMP(2),
-    updatedDt datetime(2) NOT null DEFAULT CURRENT_TIMESTAMP(2),
-    isDeleted bool not null default 0,
-    
-    foreign key (userId) references User(id)
+    "id" serial primary key,
+    "s3Id" uuid not null,
+    "userId" uuid not null references AppUser(id),
+    "createdDt" timestamp NOT null DEFAULT (now() at time zone 'utc'),
+    "updatedDt" timestamp NOT null DEFAULT (now() at time zone 'utc'),
+    "isDeleted" boolean not null default false
 );
 
 create table if NOT exists Posting (
-    id int unsigned auto_increment primary key,
-    itemStatus tinyint unsigned not null default 0,
-    title varchar(50) not null,
-    videoId int unsigned not null,
-    userId int unsigned not null,
-    createdDt datetime(2) NOT null DEFAULT CURRENT_TIMESTAMP(2),
-    updatedDt datetime(2) NOT null DEFAULT CURRENT_TIMESTAMP(2),
-    
-    foreign key (videoId) references Video(id),
-    foreign key (userId) references User(id)
+    "id" serial primary key,
+    "itemStatus" integer not null,
+    "title" text not null,
+    "videoId" integer not null references Video(id),
+    "userId" uuid not null references AppUser(id),
+    "createdDt" timestamp NOT null DEFAULT (now() at time zone 'utc'),
+    "updatedDt" timestamp NOT null DEFAULT (now() at time zone 'utc')
 );
 
 create table if NOT exists Introduction (
-    id int unsigned auto_increment primary key,
-    itemStatus tinyint unsigned not null default 0,
-    videoId int unsigned not null,
-    userId int unsigned not null,
-    createdDt datetime(2) NOT null DEFAULT CURRENT_TIMESTAMP(2),
-    updatedDt datetime(2) NOT null DEFAULT CURRENT_TIMESTAMP(2),
-    
-    foreign key (videoId) references Video(id),
-    foreign key (userId) references User(id)
+    "id" serial primary key,
+    "itemStatus" integer not null,
+    "videoId" integer not null references Video(id),
+    "userId" uuid not null references AppUser(id),
+    "createdDt" timestamp NOT null DEFAULT (now() at time zone 'utc'),
+    "updatedDt" timestamp NOT null DEFAULT (now() at time zone 'utc')
 );
 
 create table if NOT exists Application (
-    id int unsigned auto_increment primary key,
-    postingId int unsigned not null,
-    itemStatus tinyint unsigned not null default 0,
-    videoId int unsigned not null,
-    userId int unsigned not null,
-    createdDt datetime(2) NOT null DEFAULT CURRENT_TIMESTAMP(2),
-    updatedDt datetime(2) NOT null DEFAULT CURRENT_TIMESTAMP(2),
-    
-    foreign key (postingId) references Posting(id),
-    foreign key (videoId) references Video(id),
-    foreign key (userId) references User(id)
+    "id" serial primary key,
+    "postingId" integer not null references Posting(id),
+    "itemStatus" integer not null,
+    "videoId" integer not null references Video(id),
+    "userId" uuid not null references AppUser(id),
+    "createdDt" timestamp NOT null DEFAULT (now() at time zone 'utc'),
+    "updatedDt" timestamp NOT null DEFAULT (now() at time zone 'utc')
 );
 
 create Table if NOT exists Tag (
-    id mediumint unsigned auto_increment primary key,
-    name varchar(25) not null,
-    type varchar(8) not null -- industry,skill,location,hours
+    "id" serial primary key,
+    "name" text not null,
+    "type" text not null -- industry,skill,location,hours,pay
 );
 
 create table if NOT exists PostingTag (
-    id int unsigned not null,
-    tag mediumint unsigned not null,
+    "id" integer not null references Posting(id),
+    "tag" integer not null references Tag(id),
 
-    primary key (id, tag),
-    foreign key (id) references Posting(id),
-    foreign key (tag) references Tag(id)
+    primary key ("id", "tag")
 );
 
 create table if NOT exists IntroductionTag (
-    id int unsigned not null,
-    tag mediumint unsigned not null,
+    "id" integer not null references Introduction(id),
+    "tag" integer not null references Tag(id),
 
-    primary key (id, tag),
-    foreign key (id) references Introduction(id),
-    foreign key (tag) references Tag(id)
+    primary key ("id", "tag")
 );
 
-create table if NOT exists Star (
-    entityId int unsigned not null,
-    userId int unsigned not null,
+
+create table if NOT exists PostingStar (
+    "id" integer not null references Posting(id),
+    "userId" uuid not null references AppUser(id),
     
-    primary key (entityId, userId),
-    unique index (entityId),
-    foreign key (userId) references User(id)
+    primary key ("id", "userId")
 );
 
-create table if NOT exists View (
-    entityId int unsigned not null,
-    userId int unsigned not null,
+create table if NOT exists PostingView (
+    "id" integer not null references Posting(id),
+    "userId" uuid not null references AppUser(id),
 
-    primary key (entityId, userId),
-    unique index (entityId),
-    foreign key (userId) references User(id)
+    primary key ("id", "userId")
+);
+
+create table if NOT exists IntroductionStar (
+    "id" integer not null references Introduction(id),
+    "userId" uuid not null references AppUser(id),
+    
+    primary key ("id", "userId")
+);
+
+create table if NOT exists IntroductionView (
+    "id" integer not null references Introduction(id),
+    "userId" uuid not null references AppUser(id),
+
+    primary key ("id", "userId")
+);
+
+create table if NOT exists ApplicationStar (
+    "id" integer not null references Application(id),
+    "userId" uuid not null references AppUser(id),
+    
+    primary key ("id", "userId")
+);
+
+create table if NOT exists ApplicationView (
+    "id" integer not null references Application(id),
+    "userId" uuid not null references AppUser(id),
+
+    primary key ("id", "userId")
 );
 
 create table if NOT exists Invitation (
-    id int unsigned auto_increment primary key,
-    sender int unsigned not null,
-    recipient int unsigned not null,
-    accepted bool not null default 0,
-    message varchar(300) null,
-    sentDt datetime(2) NOT null DEFAULT CURRENT_TIMESTAMP(2),
-    
-    foreign key (sender) references User(id),
-    foreign key (recipient) references User(id)
+    "id" serial primary key,
+    "sender" uuid not null references AppUser(id),
+    "recipient" uuid not null references AppUser(id),
+    "accepted" boolean not null default false,
+    "message" text null,
+    "sentDt" timestamp NOT null DEFAULT (now() at time zone 'utc')
 );
