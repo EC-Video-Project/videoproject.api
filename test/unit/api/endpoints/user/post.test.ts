@@ -32,7 +32,9 @@ const BASE_REQUEST_BODY = {
 
 describe("POST /user", function () {
   this.beforeEach(function () {
-    sinon.replace(createUser, "createUser", async () => {});
+    sinon.replace(createUser, "createUser", async () => {
+      return;
+    });
   });
 
   it("should return 200 with profile details", async function () {
