@@ -51,7 +51,7 @@ create table if NOT exists Application (
 create Table if NOT exists Tag (
     "id" serial primary key,
     "name" text not null,
-    "type" text not null -- industry,skill,location,hours
+    "type" text not null -- industry,skill,location,hours,pay
 );
 
 create table if NOT exists PostingTag (

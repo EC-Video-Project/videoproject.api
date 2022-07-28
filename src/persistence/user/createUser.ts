@@ -1,7 +1,7 @@
 import { User } from "src/models/User";
 import { getPgClient } from "../pgFactory";
 
-export const createUser = async (user: User) => {
+export const createUser = async (user: User): Promise<void> => {
   const sql = `
     insert into AppUser
     ("id", "cognitoUsername", "displayName", "email", "phone", "employerMode", "bio", "profileLinks")
