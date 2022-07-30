@@ -44,11 +44,12 @@ export class User {
   }
 
   static validate(user: User): void {
-    if (!uuidValidate(user.id)) throw "invalid user id -- must be a uuid";
-    if (!DisplayNameRegex.test(user.displayName)) throw "invalid display name";
-    if (!EmailRegex.test(user.email)) throw "invalid email";
-    if (!PhoneRegex.test(user.phone)) throw "invalid phone";
-    if (user.employerMode === undefined) throw "employer mode is required";
+    if (!uuidValidate(user.id)) throw `${user.id} is not a valid user id -- must be a uuid`;
+    if (user.cognitoUsername === undefined) throw "cognitoUsername is required"
+    if (!DisplayNameRegex.test(user.displayName)) throw `${user.displayName} is not a valid display name`;
+    if (!EmailRegex.test(user.email)) throw `${user.email} is not a valid email`;
+    if (!PhoneRegex.test(user.phone)) throw `${user.phone} is not a valid phone`;
+    if (typeof user.employerMode !== 'boolean') throw `${user.employerMode} is not a valid employer mode`;
 
     user.profileLinks.forEach((link) => ProfileLink.validate(link));
   }
