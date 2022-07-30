@@ -96,3 +96,25 @@ functions:
           method: get
           authorizer:
             name: cognitoJwtAuth
+
+  #########
+  # /tag #
+  #########
+
+  tag_post:
+    handler: src/api/endpoints/tag/post-tag.handler
+    events:
+      - httpApi:
+          path: /tag
+          method: post
+          authorizer:
+            name: cognitoJwtAuth
+
+  tag_get_all:
+    handler: src/api/endpoints/tag/get-tag.handler
+    events:
+      - httpApi:
+          path: /tag
+          method: get
+          authorizer:
+            name: cognitoJwtAuth
