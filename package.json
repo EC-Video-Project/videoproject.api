@@ -5,6 +5,7 @@
   "main": "handler.js",
   "scripts": {
     "dev": "serverless offline --ignoreJWTSignature",
+    "test": "mocha -r ts-node/register -r tsconfig-paths/register -r test/hooks.ts",
     "unit-test": "mocha -r ts-node/register -r tsconfig-paths/register -r test/hooks.ts './test/unit/**/*'",
     "integration-test": "mocha -r ts-node/register -r tsconfig-paths/register -r test/hooks.ts './test/integration/**/*'",
     "run-sandbox": "mocha -r ts-node/register -r tsconfig-paths/register -r test/hooks.ts './test/sandbox.ts'"

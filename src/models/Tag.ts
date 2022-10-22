@@ -1,28 +1,28 @@
-export const tagToDbTag = (tag: Tag): string => `tag#${tag.type}#${tag.value}`;
+export const tagToDbTag = (tag: Tag): string => `tag#${tag.type}#${tag.name}`;
 
-type TagType = "skill" | "industry" | "location" | "hours";
-const VALID_TAG_TYPES = ["skill", "industry", "location", "hours"];
+const VALID_TAG_TYPES = ["skill", "industry", "location", "hours", "pay"];
+type TagType = (typeof VALID_TAG_TYPES)[number];
 
 export class Tag {
   id: number;
   type: TagType;
-  value: string;
+  name: string;
 
-  constructor(id: number, type: TagType, value: string) {
-    this.id = id;
-    this.type = type;
-    this.value = value;
+  static new(data: { id: number, type: string, name: string }): Tag {
+    const tag: Tag = {
+      id: data.id,
+      type: data.type as TagType,
+      name: data.name,
+    }
+
+    this.validate(tag);
+
+    return tag;
   }
 
-  static parse(id: number, type: string, value: string): Tag {
-    this.validate(id, type, value);
-    return new Tag(id, type as any, value);
-  }
-
-  static validate(id: number, type: string, value: string): void {
-    if (!id || id < 0) throw "invalid tag id";
-    if (!type || type.trim().length === 0) throw "tag type is required";
-    if (!value || value.trim().length === 0) throw "tag value is required";
-    if (!VALID_TAG_TYPES.includes(type)) throw "invalid tag type";
+  static validate(tag: Tag): void {
+    if (typeof tag.id !== 'number' || (tag.id < 1 && tag.id !== -1)) throw `${tag.id} is not a valid tag id`;
+    if (!tag.name || tag.name.trim().length === 0) throw "tag name is required";
+    if (!VALID_TAG_TYPES.includes(tag.type)) throw `${tag.type} is not a valid tag type`;
   }
 }
